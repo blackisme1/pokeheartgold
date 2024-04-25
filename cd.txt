@@ -1,1 +1,7 @@
-C:/Users/CKIRUser/Downloads/pokeheartgold
+cd C:/Users/CKIRUser/Downloads/pokeheartgold
+
+export DEVKITPRO=C:/devkitPro
+export DEVKITARM=${DEVKITPRO}/devkitARM
+export LM_LICENSE_FILE=C:/Users/CKIRUser/Downloads/pokeheartgold/tools/mwccarm
+
+make -j
