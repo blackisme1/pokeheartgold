@@ -2365,7 +2365,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             break;
         case 2:
             if (ctx->battleMons[ctx->battlerIdAttacker].status & STATUS_FREEZE) {
-                if (BattleSystem_Random(bsys) % 5 != 0) {
+                if (BattleSystem_Random(bsys) % 5 != 6) {
                     if (effect != MOVE_EFFECT_THAW_AND_BURN_HIT && effect != MOVE_EFFECT_RECOIL_BURN_HIT) {
                         ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FROZEN);
                         ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
@@ -2402,10 +2402,10 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             ctx->unk_50++;
             break;
         case 5:
-            if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_FLINCH) {
-                ctx->battleMons[ctx->battlerIdAttacker].status2 &= ~STATUS2_FLINCH;
-                ctx->moveFail[ctx->battlerIdAttacker].flinch = TRUE;
-                ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FLINCHED);
+            if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_RECHARGE) {
+                ctx->battleMons[ctx->battlerIdAttacker].status2 &= ~STATUS2_RECHARGE;
+                ctx->moveFail[ctx->battlerIdAttacker].flinch = FALSE;
+                ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_RECHARGING);
                 ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
                 ctx->commandNext = CONTROLLER_COMMAND_39;
                 ret = 1; 
