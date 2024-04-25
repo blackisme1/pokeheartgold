@@ -2404,6 +2404,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
         case 5:
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_RECHARGE) {
                 ctx->battleMons[ctx->battlerIdAttacker].status2 &= ~STATUS2_RECHARGE;
+                ctx->moveFail[ctx->battlerIdAttacker].flinch = FALSE;
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_RECHARGING);
                 ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
                 ctx->commandNext = CONTROLLER_COMMAND_39;
