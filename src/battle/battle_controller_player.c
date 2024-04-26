@@ -2365,7 +2365,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             break;
         case 2:
             if (ctx->battleMons[ctx->battlerIdAttacker].status & STATUS_FREEZE) {
-                if (BattleSystem_Random(bsys) % 4 == 0) {
+                if (BattleSystem_Random(bsys) % 5 != 6) {
                     if (effect != MOVE_EFFECT_THAW_AND_BURN_HIT && effect != MOVE_EFFECT_RECOIL_BURN_HIT) {
                         ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FROZEN);
                         ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
