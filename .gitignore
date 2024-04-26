@@ -1,12 +1,6 @@
 # Object files
 *.nds
 
-# Compilers
-tools/mwccarm/**
-
-# SDK
-tools/bin/**
-
 # Build folder
 build/**
 sub/build/**
@@ -40,9 +34,7 @@ build-cmake-*
 # For decomp.me
 ctx.c
 
-*.lcf.template
 *.lcf
-*.response.template
 *.response
 
 # Working files
