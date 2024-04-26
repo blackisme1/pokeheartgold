@@ -2,6 +2,6 @@ cd C:/Users/CKIRUser/Downloads/pokeheartgold
 
 export DEVKITPRO=C:/devkitPro
 export DEVKITARM=${DEVKITPRO}/devkitARM
-export LM_LICENSE_FILE=C:/Users/CKIRUser/Downloads/pokeheartgold/tools/mwccarm
+export LM_LICENSE_FILE=C:/Users/CKIRUser/Downloads/pokeheartgold/tools/mwccarm/license.dat
 
-make -j6
+make COMPARE=0
