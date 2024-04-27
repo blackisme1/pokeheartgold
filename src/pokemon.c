@@ -361,7 +361,7 @@ void CalcMonStats(Pokemon *mon) {
     if (species == SPECIES_SHEDINJA) {
         newMaxHp = 1;
     } else {
-        newMaxHp = (baseStats->hp * 2 + hpIv + hpEv / 4) * level / 100 + level + 10;
+        newMaxHp = (baseStats->hp * 2 + hpIv + hpEv / 4) * level / 100 + 0 + 5;
     }
     SetMonData(mon, MON_DATA_MAXHP, &newMaxHp);
 
@@ -1971,29 +1971,29 @@ u8 GetNatureFromPersonality(u32 pid) {
 
 const s8 gNatureStatMods[NATURE_NUM][NUM_EV_STATS] = {
     { 0,  0,  0,  0,  0},
-    { 1, -1,  0,  0,  0},
-    { 1,  0, -1,  0,  0},
-    { 1,  0,  0, -1,  0},
-    { 1,  0,  0,  0, -1},
-    {-1,  1,  0,  0,  0},
     { 0,  0,  0,  0,  0},
-    { 0,  1, -1,  0,  0},
-    { 0,  1,  0, -1,  0},
-    { 0,  1,  0,  0, -1},
-    {-1,  0,  1,  0,  0},
-    { 0, -1,  1,  0,  0},
     { 0,  0,  0,  0,  0},
-    { 0,  0,  1, -1,  0},
-    { 0,  0,  1,  0, -1},
-    {-1,  0,  0,  1,  0},
-    { 0, -1,  0,  1,  0},
-    { 0,  0, -1,  1,  0},
     { 0,  0,  0,  0,  0},
-    { 0,  0,  0,  1, -1},
-    {-1,  0,  0,  0,  1},
-    { 0, -1,  0,  0,  1},
-    { 0,  0, -1,  0,  1},
-    { 0,  0,  0, -1,  1},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
+    { 0,  0,  0,  0,  0},
     { 0,  0,  0,  0,  0},
 };
 
@@ -2024,16 +2024,16 @@ u16 ModifyStatByNature(u8 nature, u16 n, u8 statIndex) {
 }
 
 static const s8 sFriendshipModTable[FRIENDSHIP_EVENT_NUM][FRIENDSHIP_TIER_NUM] = {
-    {  5,   3,   2},  // FRIENDSHIP_EVENT_GROW_LEVEL
-    {  5,   3,   2},  // FRIENDSHIP_EVENT_VITAMIN
-    {  1,   1,   0},  // FRIENDSHIP_EVENT_BATTLE_ITEM
-    {  3,   2,   1},  // FRIENDSHIP_EVENT_LEAGUE_BATTLE
-    {  1,   1,   0},  // FRIENDSHIP_EVENT_LEARN_TMHM
-    {  1,   1,   1},  // FRIENDSHIP_EVENT_WALKING
-    { -1,  -1,  -1},  // FRIENDSHIP_EVENT_FAINT_SMALL
-    { -5,  -5, -10},  // FRIENDSHIP_EVENT_HEAL_FIELD_PSN
-    { -5,  -5, -10},  // FRIENDSHIP_EVENT_FAINT_LARGE
-    {  3,   2,   1},  // FRIENDHSIP_EVENT_CONTEST_WIN
+    {  5,   5,   5},  // FRIENDSHIP_EVENT_GROW_LEVEL
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_VITAMIN
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_BATTLE_ITEM
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_LEAGUE_BATTLE
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_LEARN_TMHM
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_WALKING
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_FAINT_SMALL
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_HEAL_FIELD_PSN
+    {  0,   0,   0},  // FRIENDSHIP_EVENT_FAINT_LARGE
+    {  0,   0,   0},  // FRIENDHSIP_EVENT_CONTEST_WIN
 };
 
 void MonApplyFriendshipMod(Pokemon *mon, u8 kind, u16 location) {

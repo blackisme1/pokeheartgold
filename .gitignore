@@ -19,7 +19,6 @@ build-cmake-*
 *.srl
 
 # Tool executables
-*.exe
 
 # Generated files
 *.4bpp
