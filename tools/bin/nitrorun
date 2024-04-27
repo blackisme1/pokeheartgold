@@ -13,34 +13,31 @@
 #  in whole or in part, without the prior written consent of Nintendo.
 #
 #  $Log: nitrorun,v $
-#  Revision 1.4  09/09/2005 05:38:23  yada
-#  applied for ""-ed string containing space characters
-#
-#  Revision 1.3  09/02/2005 09:21:40  kitase_hirotake
+#  Revision 1.3  2005/09/02 08:21:40  kitase_hirotake
 #  tr to cygpath
 #
-#  Revision 1.2  08/31/2005 05:58:51  yada
+#  Revision 1.2  2005/08/31 04:58:51  yada
 #  supported '-version'
 #
-#  Revision 1.1  08/30/2005 08:37:19  yada
+#  Revision 1.1  2005/08/30 07:37:19  yada
 #  first release
 #
 #  $NoKeywords: $
 #---------------------------------------------------------------------------
 
-#---- SDK root directory
+#---- SDK ルートディレクトリ
 SDKROOT=`cygpath -u "$NITROSDK_ROOT"`
 
-#---- Run command
+#---- 実行コマンド
 LOADRUN=$SDKROOT/tools/bin/loadrun.exe
 BURYARG=$SDKROOT/tools/bin/buryarg.exe
 COMMANDNAME=`basename $0`
 
-#---- Command options
+#---- コマンドオプション
 BOPTION=""
 LOPTION=""
 
-#---- Run flags
+#---- 動作フラグ
 gVerboseMode=0
 gHelpMode=0
 gIsError=0
@@ -48,21 +45,21 @@ gNoExecMode=0
 
 #----------------------------------------------------------------
 # showVersion
-#		Display the version
+#		バージョン表示
 #
 function showVersion()
 {
     echo "$COMMANDNAME  1.2  Copyright 2005 Nintendo. All right reserved."
     #
-    # 1.2  Can now accept character strings that include white space as arguments if they are surrounded by ""
-    # 1.1 Included version display
+    # 1.2 引数が""で囲まれて空白を含んだ文字列も受け取れるようになった
+    # 1.1 バージョン表示を入れた
     # 1.0 first release
     #
 }
 
 #----------------------------------------------------------------
 # showUsage
-#		Display the usage
+#		使い方表示
 #
 function showUsage()
 {
@@ -85,7 +82,7 @@ function showUsage()
 
 #----------------------------------------------------------------
 # checkError
-# 		Error check up to here
+# 		ここまでのエラーチェック
 #
 function checkError
 {
@@ -115,11 +112,11 @@ function checkError
 
 #----------------------------------------------------------------
 # checkExistence
-#		Check existence of file
+#		ファイルの存在確認
 #
 function checkExistence()
 {
-	#---- Does the buryarg command exist?
+	#---- buryarg コマンドが存在するか
 	if [ ! -e $BURYARG ];
 	then
 		gIsError=1
@@ -127,7 +124,7 @@ function checkExistence()
 		return
 	fi;
 
-	#---- Does the loadrun command exist?
+	#---- loadrun コマンドが存在するか
 	if [ ! -e $LOADRUN ];
 	then
 		gIsError=1
@@ -135,7 +132,7 @@ function checkExistence()
 		return
 	fi;
 
-	#---- Does the srl file exist?
+	#---- srl ファイルが存在するか
 	if [ ! -e $1 ];
 	then
 		gIsError=1
@@ -146,55 +143,55 @@ function checkExistence()
 
 #================================================================
 # main
-#		Main
+#		メイン
 #
 
-#---------------- Check options
+#---------------- オプションのチェック
 while [ 1 ];
 do
 	case $1 in
-		# Help
+		# ヘルプ
 		--help|-help|-h)
 			gHelpMode=1
 			shift 1
 			continue
 			;;
-		# Version
+		# バージョン
 		--version|-version)
 			showVersion
 			exit 1
 			;;
-		# Options passed to buryarg
+		# buryarg に渡すオプション
 		--bopt*|-bopt*)
 			BOPTION=$2
 			shift 2
 			continue
 			;;
-		# Options passed to loadrun
+		# loadrun に渡すオプション
 		--lopt*|-lopt*)
 			LOPTION=$2
 			shift 2
 			continue
 			;;
-		# verbose mode
+		# verbose モード
 		--verbose|-v)
 			gVerboseMode=1
 			shift 1
 			continue
 			;;
-		# Do not execute
+		# 実行しない
 		--noexec|-n)
 			gNoExecMode=1
 			shift 1
 			continue
 			;;
-		# Other options
+		# 他のオプション
 		-*)
 			gIsError=1
 			echo "*** Error: $COMMANDNAME: Illegal option"
 			break;
 			;;
-		# Not an option
+		# オプションでないもの
 		*)
 			break;
 			;;
@@ -202,7 +199,7 @@ do
 
 done
 
-#---------------- Error check for whether file exists or not
+#---------------- ファイルの存在などのエラーチェック
 ARGC=$#
 
 if [ $gIsError -eq 0 ];
@@ -212,7 +209,7 @@ fi;
 
 checkError
 
-#---------------- Execute command
+#---------------- コマンド実行
 {
 	if [ $gVerboseMode -eq 1 ];
 	then
@@ -228,7 +225,7 @@ checkError
 
 	if [ $gNoExecMode -eq 0 ];
 	then
-		#---- Link and execute two commands using a pipe
+		#---- ２つのコマンドをパイプで繋げ実行
 		$BURYARG $BOPTION --stdout "$@"  | $LOADRUN --stdin $LOPTION
 	fi;
 }

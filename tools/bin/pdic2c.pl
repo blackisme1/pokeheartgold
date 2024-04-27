@@ -16,7 +16,7 @@ use strict;
 use vars qw($VERSION);
 use vars qw($HEADER_FILE_NAME $PREFIX);
 
-$VERSION = do { my @r = q$Revision: 1.9 $ =~ /\d+/g; sprintf '%d.'.('%02d'x$#r), @r };
+$VERSION = do { my @r = q$Revision: 1.10 $ =~ /\d+/g; sprintf '%d.'.('%02d'x$#r), @r };
 
 use Fcntl qw(:DEFAULT);
 use Getopt::Std;
@@ -90,8 +90,8 @@ my $wholeStrokeNum = 0;
 while (<>)
 {
     s/\x0D?\x0A?$//; # chomp
-    my ($data, $comment) = /^([^#]*?)\s+#\s+(.*)$/;
-    my ($name, $kind, $correction, $normalizeSize, $pointsString) = $data =~ /^"([^"]+)" (\d+) (-?\d+) (\d+) (.*)|\s+$/; #"
+    my ($data, $comment) = /^([^#]*?)\s*(?:#\s*(.*))?$/;
+    my ($name, $kind, $correction, $normalizeSize, $pointsString) = $data =~ /^"([^"]+)" (\d+) (-?\d+) (\d+) (.*)|\s*$/; #"
     my $index = $wholePointNum;
     my $pointCount = 0;
     $pointsString =~ s/^|//;
@@ -295,20 +295,23 @@ sub output_source
 
 #---------------------------------------------------------------------------
 #  $Log: pdic2c.pl,v $
-#  Revision 1.9  01/18/2006 09:50:56  okubata_ryoma
-#  Revised copyright.
+#  Revision 1.10  2007/11/19 05:12:04  seiki_masashi
+#  コメントが必須になっていたのを修正
 #
-#  Revision 1.8  01/18/2006 09:09:38  seiki_masashi
-#  Deleted the -W execute option in perl
+#  Revision 1.9  2006/01/18 09:50:56  okubata_ryoma
+#  copyrightの修正
 #
-#  Revision 1.7  10/04/2005 04:34:37  seiki_masashi
-#  Added prefix specification.
+#  Revision 1.8  2006/01/18 09:09:38  seiki_masashi
+#  perl の起動オプションの -W を除去
 #
-#  Revision 1.6  10/04/2005 03:56:06  seiki_masashi
-#  Changed so that file names to be included can be specified.
+#  Revision 1.7  2005/10/04 04:34:37  seiki_masashi
+#  プレフィックス指定の追加
 #
-#  Revision 1.5  10/04/2005 02:54:51  seiki_masashi
-#  Changed so that .c and .h can be output separately.
+#  Revision 1.6  2005/10/04 03:56:06  seiki_masashi
+#  include するファイル名を指定できるように変更
+#
+#  Revision 1.5  2005/10/04 02:54:51  seiki_masashi
+#  .c と .h を個別に出力できるように変更
 #
 #
 #---------------------------------------------------------------------------

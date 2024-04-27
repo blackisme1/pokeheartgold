@@ -12,9 +12,6 @@
 # in whole or in part, without the prior written consent of Nintendo.
 #
 # $Log: sdkindent.copyright,v $
-# Revision 1.1  2005/02/28 04:35:47  yosizaki
-# initial upload.
-#
 # $NoKeywords: $
 #----------------------------------------------------------------------------
 
@@ -26,7 +23,4 @@ done
 
 #-----------------------------------------------------------------------
 # $Log: sdkindent.copyright,v $
-# Revision 1.1  2005/02/28 04:35:47  yosizaki
-# initial upload.
-#
 #-----------------------------------------------------------------------
