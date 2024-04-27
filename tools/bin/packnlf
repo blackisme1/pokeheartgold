@@ -61,7 +61,7 @@ function get_new_entry(t)
 {
 	entry = t;
 	
-	# * で始まるエントリは擬似ファイルなので変換しない
+	# * Entries that start with * are false files; Do not convert.
 	if (entry ~/^[*]/){
 		return entry;
 	}
@@ -70,14 +70,14 @@ function get_new_entry(t)
 	gsub(/:/,"_",   new_entry);
 	gsub(/\/\//,"/",new_entry);
 	
-	# : がパスに含まれている場合は絶対パスである．
-	# これは ":" → "_" として相対パス化する
+	# If path includes ":", it is an absolute path.
+	# Converts to relative path changing ":" to "_"
 	if (entry !~/:/){
 		entry = root"/"entry;
 		gsub(/\/\//,"/",entry);
 	}
 	
-	# ファイルをコピーする
+	# Copy file. 
 	cmd = "install -D "enquote(entry)" "enquote(arcdir"/"new_entry);
 	system(cmd);
 	
@@ -86,7 +86,7 @@ function get_new_entry(t)
 
 function dequote(t)
 {
-	# "" を外す
+	# Remove ""
 	entry = t;
 	sub(/^\"/, "", entry);
 	sub(/\"$/, "", entry);
@@ -95,7 +95,7 @@ function dequote(t)
 
 function enquote(t)
 {
-	# "" で囲む
+	# Enclose with "" 
 	entry = "\""t"\"";
 	return entry;
 }

@@ -12,15 +12,11 @@
 # in whole or in part, without the prior written consent of Nintendo.
 #
 # $Log: make_utest_main__,v $
-# Revision 1.2  2007/07/17 01:58:53  yasu
-# CR コードを無視するように設定
-#
-# Revision 1.1  2005/06/24 03:04:43  yasu
-# ユニットテストの追加
+# Revision 1.1  06/24/2005 03:04:43 AM  yasu
+# Added unit test
 #
 # $NoKeywords: $
 #----------------------------------------------------------------------------
-(shopt -s igncr) 2>/dev/null && eval 'shopt -s igncr';#
 
 #--------------------------
 # Decode Command Line
@@ -163,8 +159,8 @@ fi
 ' > $UTEST_OUT && echo "Create... $UTEST_OUT" || rm $UTEST_OUT
 
 #
-# 返値を常に TRUE にしているので $UTEST_OUT が出来るかどうかで次の処理に
-# 進むかどうかを判定するべし
+# Because the return value is always TRUE, advancement to the next process should be determined based on whether $UTEST_OUT is possible.
+#  
 #
 
 #===== End of makeutest =====
