@@ -1323,7 +1323,7 @@ static void BattleControllerPlayer_UpdateMonCondition(BattleSystem *bsys, Battle
             if ((ctx->battleMons[battlerId].status2 & STATUS2_BIND) && ctx->battleMons[battlerId].hp != 0) {
                 ctx->battleMons[battlerId].status2 -= 1 << STATUS2_BINDING_SHIFT;
                 if (ctx->battleMons[battlerId].status2 & STATUS2_BIND) {
-                    ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp * -1, 16);
+                    ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp * -1, 8);
                     ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_BIND_EFFECT);
                 } else {
                     ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_BIND_END);
