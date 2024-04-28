@@ -1165,6 +1165,7 @@ typedef enum UpdateMonConditionState {
     UMC_STATE_YAWN,
     UMC_STATE_HELD_ITEM_STATUS,
     UMC_STATE_HELD_ITEM_DAMAGE,
+	UMC_STATE_FREEZE,
     UMC_STATE_END
 } UpdateMonConditionState;
 
@@ -1541,6 +1542,16 @@ static void BattleControllerPlayer_UpdateMonCondition(BattleSystem *bsys, Battle
         }
         case UMC_STATE_HELD_ITEM_DAMAGE:
             if (TryHeldItemNegativeEffect(bsys, ctx, battlerId) == TRUE) {
+                flag = 1;
+            }
+            ctx->stateUpdateMonCondition++;
+            break;
+		case UMC_STATE_FREEZE:
+            if ((ctx->battleMons[battlerId].status & STATUS_FREEZE) && ctx->battleMons[battlerId].hp != 0) {
+                ctx->battlerIdTemp = battlerId;
+                ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FROZEN);
+                ctx->commandNext = ctx->command;
+                ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
                 flag = 1;
             }
             ctx->stateUpdateMonCondition++;
@@ -2364,25 +2375,6 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             ctx->unk_50++;
             break;
         case 2:
-            if (ctx->battleMons[ctx->battlerIdAttacker].status & STATUS_FREEZE) {
-                if (BattleSystem_Random(bsys) % 5 != 0) {
-                    if (effect != MOVE_EFFECT_THAW_AND_BURN_HIT && effect != MOVE_EFFECT_RECOIL_BURN_HIT) {
-                        ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FROZEN);
-                        ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                        ctx->commandNext = CONTROLLER_COMMAND_39;
-                        ret = 1; 
-                    }
-                } else {
-                    ctx->battlerIdTemp = ctx->battlerIdAttacker;
-                    ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_THAW_OUT);
-                    ctx->commandNext = ctx->command;
-                    ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                    ret = 2;
-                }
-            }
-            ctx->unk_50++;
-            break;
-        case 3:
             if (CheckTruant(ctx, ctx->battlerIdAttacker) == TRUE) {
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_LOAFING_AROUND);
                 ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
@@ -2391,7 +2383,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             }
             ctx->unk_50++;
             break;
-        case 4:
+        case 3:
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_RECHARGE) {
                 ctx->battleMons[ctx->battlerIdAttacker].status2 &= ~STATUS2_RECHARGE;
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_RECHARGING);
@@ -2401,18 +2393,18 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             }
             ctx->unk_50++;
             break;
-        case 5:
+        case 4:
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_FLINCH) {
                 ctx->battleMons[ctx->battlerIdAttacker].status2 &= ~STATUS2_FLINCH;
                 ctx->moveFail[ctx->battlerIdAttacker].flinch = TRUE;
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FLINCHED);
-                ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                ctx->commandNext = CONTROLLER_COMMAND_39;
-                ret = 1; 
+				ctx->commandNext = ctx->command;
+				ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
+                ret = 2; 
             }
             ctx->unk_50++;
             break;
-        case 6:
+        case 5:
             if (ctx->battleMons[ctx->battlerIdAttacker].unk88.disabledMove == ctx->moveNoTemp) {
                 ctx->moveFail[ctx->battlerIdAttacker].disabled = TRUE; 
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_MOVE_IS_DISABLED);
@@ -2422,7 +2414,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             }
             ctx->unk_50++;
             break;
-        case 7:
+        case 6:
             if (ctx->battleMons[ctx->battlerIdAttacker].unk88.tauntTurns && ctx->trainerAIData.moveData[ctx->moveNoCur].power == 0) {
                 ctx->moveFail[ctx->battlerIdAttacker].unk0_5 = TRUE;
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_MOVE_FAIL_TAUNTED);
@@ -2432,7 +2424,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             }
             ctx->unk_50++;
             break;
-        case 8:
+        case 7:
             if (BattleContext_CheckMoveImprisoned(bsys, ctx, ctx->battlerIdAttacker, ctx->moveNoCur)) {
                 ctx->moveFail[ctx->battlerIdAttacker].imprison = TRUE;
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_MOVE_IS_IMPRISONED);
@@ -2442,17 +2434,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             }
             ctx->unk_50++;
             break;
-        case 9:
-            if (BattleContext_CheckMoveUnuseableInGravity(bsys, ctx, ctx->battlerIdAttacker, ctx->moveNoCur)) {
-                ctx->moveFail[ctx->battlerIdAttacker].gravity = TRUE;
-                ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_MOVE_FAIL_GRAVITY);
-                ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                ctx->commandNext = CONTROLLER_COMMAND_39;
-                ret = 1;
-            }
-            ctx->unk_50++;
-            break;
-        case 10:
+        case 8:
             if (BattleContext_CheckMoveHealBlocked(bsys, ctx, ctx->battlerIdAttacker, ctx->moveNoCur)) {
                 ctx->moveFail[ctx->battlerIdAttacker].healBlock = TRUE;
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_MOVE_IS_HEAL_BLOCKED);
@@ -2462,7 +2444,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             }
             ctx->unk_50++;
             break;
-        case 11:
+        case 9:
             ctx->unk_50++;
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_CONFUSION) {
                 ctx->battleMons[ctx->battlerIdAttacker].status2 -= 1;
@@ -2492,37 +2474,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
                 }
             }
             break;
-        case 12:
-            if (ctx->battleMons[ctx->battlerIdAttacker].status & STATUS_PARALYSIS && GetBattlerAbility(ctx, ctx->battlerIdAttacker) != ABILITY_MAGIC_GUARD) {
-                if (BattleSystem_Random(bsys) % 4 == 0) {
-                    ctx->moveFail[ctx->battlerIdAttacker].paralysis = TRUE;
-                    ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FULLY_PARALYZED);
-                    ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                    ctx->commandNext = CONTROLLER_COMMAND_39;
-                    ret = 1; 
-                }
-            }
-            ctx->unk_50++;
-            break;
-        case 13:
-            if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_ATTRACT) {
-                ctx->battlerIdTemp = LowestFlagNo((ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_ATTRACT) >> STATUS2_ATTRACT_SHIFT);
-                if (BattleSystem_Random(bsys) & 1) {
-                    ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_INFATUATED);
-                    ctx->commandNext = ctx->command;
-                    ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                    ret = 2; 
-                } else {
-                    ctx->moveFail[ctx->battlerIdAttacker].infatuation = TRUE;
-                    ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_IMMOBILIZED_BY_LOVE);
-                    ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                    ctx->commandNext = CONTROLLER_COMMAND_39;
-                    ret = 1; 
-                }
-            }
-            ctx->unk_50++;
-            break;
-        case 14:
+        case 10:
             ctx->unk_50++;
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_BIDE) {
                 ctx->battleMons[ctx->battlerIdAttacker].status2 -= (1 << STATUS2_BIDE_SHIFT);
@@ -2547,18 +2499,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
                 ret = 2; 
             }
             break;
-        case 15:
-            if (ctx->battleMons[ctx->battlerIdAttacker].status & STATUS_FREEZE) {
-                if (effect == MOVE_EFFECT_THAW_AND_BURN_HIT || effect == MOVE_EFFECT_RECOIL_BURN_HIT) {
-                    ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_DEFROSTED_BY_MOVE);
-                    ctx->commandNext = ctx->command;
-                    ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                    ret = 2; 
-                }
-            }
-            ctx->unk_50++;
-            break;
-        case 16:
+        case 11:
             ctx->unk_50 = 0;
             ret = 3;
             break;

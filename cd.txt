@@ -1,7 +1,9 @@
-cd C:/Users/CKIRUser/Downloads/pokeheartgold
+git clone --recursive https://github.com/pret/pokeheartgold.git
 
 export DEVKITPRO=C:/devkitPro
 export DEVKITARM=${DEVKITPRO}/devkitARM
 export LM_LICENSE_FILE=C:/Users/CKIRUser/Downloads/pokeheartgold/tools/mwccarm/license.dat
+
+cd C:/Users/CKIRUser/Downloads/pokeheartgold
 
 make COMPARE=0

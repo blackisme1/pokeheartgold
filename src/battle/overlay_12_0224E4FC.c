@@ -6068,6 +6068,10 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
 
         dmg /= dmg2;
         dmg /= 50;
+		
+		if ((calcAttacker.status & STATUS_FREEZE)) {
+            dmg /= 2;
+        }
 
         if ((sideCondition & SIDE_CONDITION_LIGHT_SCREEN) && crit == 1 && ctx->trainerAIData.moveData[moveNo].effect != MOVE_EFFECT_REMOVE_SCREENS) {
             if ((battleType & BATTLE_TYPE_DOUBLES) && GetMonsHitCount(bsys, ctx, 1, battlerIdTarget) == 2) {

@@ -361,27 +361,27 @@ void CalcMonStats(Pokemon *mon) {
 	if (species == SPECIES_SHEDINJA) {
 		newMaxHp = 1;
 	} else {
-		newMaxHp = (baseStats->hp * 2 + hpIv + hpEv / 4) * level / 100 + 5;
+		newMaxHp = (baseStats->hp * 2) * level / 100 + 5;
 	}
 	SetMonData(mon, MON_DATA_MAXHP, &newMaxHp);
 
-	newAtk = (baseStats->atk * 2 + atkIv + atkEv / 4) * level / 100 + 5;
+	newAtk = (baseStats->atk * 2) * level / 100 + 5;
 	newAtk = ModifyStatByNature(GetMonNature(mon), (u16)newAtk, STAT_ATK);
 	SetMonData(mon, MON_DATA_ATK, &newAtk);
 
-	newDef = (baseStats->def * 2 + defIv + defEv / 4) * level / 100 + 5;
+	newDef = (baseStats->def * 2) * level / 100 + 5;
 	newDef = ModifyStatByNature(GetMonNature(mon), (u16)newDef, STAT_DEF);
 	SetMonData(mon, MON_DATA_DEF, &newDef);
 
-	newSpeed = (baseStats->speed * 2 + speedIv + speedEv / 4) * level / 100 + 5;
+	newSpeed = (baseStats->speed * 2) * level / 100 + 5;
 	newSpeed = ModifyStatByNature(GetMonNature(mon), (u16)newSpeed, STAT_SPEED);
 	SetMonData(mon, MON_DATA_SPEED, &newSpeed);
 
-	newSpatk = (baseStats->spatk * 2 + spatkIv + spatkEv / 4) * level / 100 + 5;
+	newSpatk = (baseStats->spatk * 2) * level / 100 + 5;
 	newSpatk = ModifyStatByNature(GetMonNature(mon), (u16)newSpatk, STAT_SPATK);
 	SetMonData(mon, MON_DATA_SPATK, &newSpatk);
 
-	newSpdef = (baseStats->spdef * 2 + spdefIv + spdefEv / 4) * level / 100 + 5;
+	newSpdef = (baseStats->spdef * 2) * level / 100 + 5;
 	newSpdef = ModifyStatByNature(GetMonNature(mon), (u16)newSpdef, STAT_SPDEF);
 	SetMonData(mon, MON_DATA_SPDEF, &newSpdef);
 
