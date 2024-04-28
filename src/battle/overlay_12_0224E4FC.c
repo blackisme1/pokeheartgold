@@ -4270,7 +4270,7 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
                 boost /= 2;
             }
             if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / boost && ctx->battleMons[battlerId].statChanges[6] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
-                ctx->msgTemp = 5;
+                ctx->msgTemp = 6;
                 script = BATTLE_SUBSCRIPT_HELD_ITEM_RAISE_STAT;
                 ret = TRUE;
             }
@@ -4616,7 +4616,7 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
                 boost /= 2;
             }
             if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / boost && ctx->battleMons[battlerId].statChanges[6] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
-                ctx->msgTemp = 5;
+                ctx->msgTemp = 6;
                 script = BATTLE_SUBSCRIPT_HELD_ITEM_RAISE_STAT;
                 ret = TRUE;
             }
@@ -4779,7 +4779,7 @@ int GetHeldItemModifier(BattleContext *ctx, int battlerId, int flag) {
 
 int GetNaturalGiftPower(BattleContext *ctx, int battlerId) {
     u16 itemNo = GetBattlerHeldItem(ctx, battlerId);
-    return GetItemVar(ctx, itemNo, ITEM_NATURAL_GIFT_POWER);
+    return GetItemVar(ctx, itemNo, 90);
 }
 
 int GetNaturalGiftType(BattleContext *ctx, int battlerId) {
@@ -4805,7 +4805,7 @@ int GetHeldItemFlingPower(BattleContext *ctx, int battlerId) {
         return 0;
     }
 
-    return GetItemVar(ctx, ctx->battleMons[battlerId].item, ITEM_VAR_10);
+    return GetItemVar(ctx, ctx->battleMons[battlerId].item, 90);
 }
 
 BOOL BattlerCanSwitch(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
@@ -4815,18 +4815,21 @@ BOOL BattlerCanSwitch(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
         return FALSE;
     }
 
-    if ((ctx->battleMons[battlerId].status2 & (STATUS2_BIND | STATUS2_MEAN_LOOK)) || (ctx->battleMons[battlerId].moveEffectFlags & MOVE_EFFECT_FLAG_INGRAIN)) {
+    if ((ctx->battleMons[battlerId].status2 & (STATUS2_BIND | STATUS2_MEAN_LOOK)) || (ctx->battleMons[battlerId].moveEffectFlags & MOVE_EFFECT_FLAG_INGRAIN)) &&
+		(GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST) {
         ret = TRUE;
     }
 
-    if ((GetBattlerAbility(ctx, battlerId) != ABILITY_SHADOW_TAG && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_SHADOW_TAG)) ||
-        ((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) == TYPE_STEEL || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) == TYPE_STEEL) && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_MAGNET_PULL))) {
+    if ((GetBattlerAbility(ctx, battlerId) != ABILITY_SHADOW_TAG && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_SHADOW_TAG)) && ((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST))) ||
+		(((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) == TYPE_STEEL || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) == TYPE_STEEL) && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_MAGNET_PULL))
+		((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST) && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_MAGNET_PULL))){
         ret = TRUE;
     }
 
     if (((GetBattlerAbility(ctx, battlerId) != ABILITY_LEVITATE &&
         ctx->battleMons[battlerId].unk88.magnetRiseTurns == 0 &&
         GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_FLYING && GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_FLYING) ||
+		GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST && GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST) ||
         GetBattlerHeldItemEffect(ctx, battlerId) == HOLD_EFFECT_SPEED_DOWN_GROUNDED ||
         (ctx->fieldCondition & FIELD_CONDITION_GRAVITY)) &&
         CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_ARENA_TRAP)) {
@@ -4849,14 +4852,14 @@ BOOL TryEatOpponentBerry(BattleSystem *bsys, BattleContext *ctx, int battlerId) 
     switch (item) {
     case STEAL_EFFECT_RESTORE_HP: //oran berry
         if (ctx->battleMons[ctx->battlerIdAttacker].hp != ctx->battleMons[ctx->battlerIdAttacker].maxHp) {
-            ctx->hpCalc = mod;
+            ctx->hpCalc = DamageDivide(ctx->battleMons[ctx->battlerIdAttacker].maxHp, 8);
             script = BATTLE_SUBSCRIPT_HELD_ITEM_HP_RESTORE;
         }
         ret = TRUE;
         break;
     case STEAL_EFFECT_RESTORE_HP_PRCT: //sitrus berry
         if (ctx->battleMons[ctx->battlerIdAttacker].hp != ctx->battleMons[ctx->battlerIdAttacker].maxHp) {
-            ctx->hpCalc = DamageDivide(ctx->battleMons[ctx->battlerIdAttacker].maxHp * mod, 100);
+            ctx->hpCalc = DamageDivide(ctx->battleMons[ctx->battlerIdAttacker].maxHp, 4);
             script = BATTLE_SUBSCRIPT_HELD_ITEM_HP_RESTORE;
         }
         ret = TRUE;
@@ -5066,7 +5069,10 @@ BOOL TryEatOpponentBerry(BattleSystem *bsys, BattleContext *ctx, int battlerId) 
         ret = TRUE;
         break;
     case STEAL_EFFECT_ACC_UP: //micle berry
-        script = BATTLE_SUBSCRIPT_HELD_ITEM_TEMP_ACC_UP;
+        if (ctx->battleMons[ctx->battlerIdAttacker].statChanges[6] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
+            ctx->msgTemp = 6;
+            script = BATTLE_SUBSCRIPT_HELD_ITEM_RAISE_STAT;
+        }
         ret = TRUE;
         break;
     default:
@@ -5102,11 +5108,11 @@ BOOL TryFling(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
 
     switch (item) {
     case STEAL_EFFECT_RESTORE_HP: //oran berry
-        ctx->flingData = mod;
+        ctx->flingData = DamageDivide(ctx->battleMons[ctx->battlerIdTarget].maxHp, 8);
         ctx->flingScript = 198;
         break;
     case STEAL_EFFECT_RESTORE_HP_PRCT: //sitrus berry
-        ctx->flingData = DamageDivide(ctx->battleMons[ctx->battlerIdTarget].maxHp * mod, 100);
+        ctx->flingData = DamageDivide(ctx->battleMons[ctx->battlerIdTarget].maxHp, 4);
         ctx->flingScript = 198;
         break;
     case STEAL_EFFECT_CURE_PARALYSIS: //cheri berry
@@ -5327,8 +5333,10 @@ BOOL TryFling(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
         }
         break;
     case STEAL_EFFECT_ACC_UP: //micle berry
-        ctx->flingScript = 265;
-        break;
+        if (ctx->battleMons[ctx->battlerIdTarget].statChanges[6] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
+            ctx->msgTemp = 6;
+            ctx->flingScript = 208;
+        }
     default:
         break;
     }
