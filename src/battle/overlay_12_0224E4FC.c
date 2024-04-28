@@ -3004,6 +3004,13 @@ static const u16 sHealBlockUnusableMoves[] = {
     MOVE_LUNAR_DANCE,
     MOVE_HEALING_WISH,
     MOVE_WISH
+	MOVE_ABSORB
+	MOVE_DRAIN_PUNCH
+	MOVE_DREAM_EATER
+	MOVE_GIGA_DRAIN
+	MOVE_LEECH_LIFE
+	MOVE_LEECH_SEED
+	MOVE_MEGA_DRAIN
 };
 
 BOOL BattleContext_CheckMoveHealBlocked(BattleSystem *bsys, BattleContext *ctx, int battlerId, int moveNo) {
@@ -3052,7 +3059,7 @@ int GetBattlerLearnedMoveCount(BattleSystem *bsys, BattleContext *ctx, int battl
 }
 
 //BUG: There isn't a reason why this shouldn't be const, but it's located in .data and not .rodata
-static u16 sSoundMoves[] = {
+static const sSoundMoves[] = {
     MOVE_GROWL,
     MOVE_ROAR,
     MOVE_SING,
@@ -3064,7 +3071,8 @@ static u16 sSoundMoves[] = {
     MOVE_GRASS_WHISTLE,
     MOVE_HYPER_VOICE,
     MOVE_BUG_BUZZ,
-    MOVE_CHATTER
+    MOVE_CHATTER,
+	MOVE_HOWL
 };
 
 int BattleContext_CheckMoveImmunityFromAbility(BattleContext *ctx, int battlerIdAttacker, int battlerIdTarget) {
@@ -3080,22 +3088,34 @@ int BattleContext_CheckMoveImmunityFromAbility(BattleContext *ctx, int battlerId
     } else {
         moveType = ctx->trainerAIData.moveData[ctx->moveNoCur].type;
     }
+	
+	if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_LIGHTNINGROD) == TRUE && moveType == TYPE_ELECTRIC && battlerIdAttacker != battlerIdTarget) {
+        script = BATTLE_SUBSCRIPT_LIGHTNING_ROD_REDIRECTED;
+    }
+	
+	if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_STORM_DRAIN) == TRUE && moveType == TYPE_WATER && battlerIdAttacker != battlerIdTarget) {
+        script = BATTLE_SUBSCRIPT_LIGHTNING_ROD_REDIRECTED;
+    }
 
     if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_VOLT_ABSORB) == TRUE && moveType == TYPE_ELECTRIC && battlerIdAttacker != battlerIdTarget) {
         ctx->hpCalc = DamageDivide(ctx->battleMons[battlerIdTarget].maxHp, 4);
         script = BATTLE_SUBSCRIPT_ABILITY_RESTORES_HP;
-    }    
-
-    if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_WATER_ABSORB) == TRUE && moveType == TYPE_WATER && !(ctx->battleStatus & BATTLE_STATUS_CHARGE_TURN) && ctx->trainerAIData.moveData[ctx->moveNoCur].power) {
-        ctx->hpCalc = DamageDivide(ctx->battleMons[battlerIdTarget].maxHp, 4);
-        script = BATTLE_SUBSCRIPT_ABILITY_RESTORES_HP;
     }
-    int moveNoCur = ctx->moveNoCur;
-    if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_FLASH_FIRE) == TRUE && moveType == TYPE_FIRE && !(ctx->battleMons[battlerIdTarget].status & STATUS_FREEZE) && !(ctx->battleStatus & BATTLE_STATUS_CHARGE_TURN)) {
+	
+	int moveNoCur = ctx->moveNoCur;
+    if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_WATER_ABSORB) == TRUE && moveType == TYPE_WATER && !(ctx->battleStatus & BATTLE_STATUS_CHARGE_TURN) && ctx->trainerAIData.moveData[ctx->moveNoCur].power) {
+        if (ctx->trainerAIData.moveData[ctx->moveNoCur].power || ctx->moveNoCur == MOVE_THUNDER_WAVE) {
+			ctx->hpCalc = DamageDivide(ctx->battleMons[battlerIdTarget].maxHp, 4);
+			script = BATTLE_SUBSCRIPT_ABILITY_RESTORES_HP;
+		}
+    }
+
+    if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_FLASH_FIRE) == TRUE && moveType == TYPE_FIRE && !(ctx->battleStatus & BATTLE_STATUS_CHARGE_TURN)) {
         if (ctx->trainerAIData.moveData[ctx->moveNoCur].power || ctx->moveNoCur == MOVE_WILL_O_WISP) {
             script = BATTLE_SUBSCRIPT_ABSORB_AND_BOOST_FIRE_TYPE_MOVES;
         }
     }
+	
     if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_SOUNDPROOF) == TRUE) {
         for (int i = 0; i < NELEMS(sSoundMoves); i++) {
             if (sSoundMoves[i] == ctx->moveNoCur) {
@@ -3104,9 +3124,11 @@ int BattleContext_CheckMoveImmunityFromAbility(BattleContext *ctx, int battlerId
             }
         }
     }
+
     if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_MOTOR_DRIVE) == TRUE && moveType == TYPE_ELECTRIC && battlerIdAttacker != battlerIdTarget) {
         script = BATTLE_SUBSCRIPT_ABSORB_AND_SPEED_UP_1_STAGE;
     }
+
     if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_DRY_SKIN) == TRUE && moveType == TYPE_WATER && !(ctx->battleStatus & BATTLE_STATUS_CHARGE_TURN) && ctx->trainerAIData.moveData[ctx->moveNoCur].power) {
         ctx->hpCalc = DamageDivide(ctx->battleMons[battlerIdTarget].maxHp, 4);
         script = BATTLE_SUBSCRIPT_ABILITY_RESTORES_HP;
@@ -3836,7 +3858,12 @@ BOOL CheckStatusHealAbility(BattleSystem *bsys, BattleContext *ctx, int battlerI
         }
         break;
     case ABILITY_OBLIVIOUS:
-        if (ctx->battleMons[battlerId].status2 & STATUS2_ATTRACT) {
+		if ((ctx->battleMons[battlerId].status2 & STATUS2_ATTRACT) ||
+		(ctx->battleMons[battlerId].unk88.tauntTurns) ||
+		(ctx->battleMons[battlerId].unk88.encoredTurns) ||
+		(ctx->battleMons[battlerId].status2 & STATUS2_TORMENT) ||
+		(ctx->battleMons[battlerId].unk88.healBlockTurns) ||
+		(ctx->battleMons[battlerId].unk88.disabledTurns){
             ctx->msgTemp = 6;
             ret = TRUE;
         }
@@ -4227,7 +4254,12 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
             break;
         }
         case HOLD_EFFECT_HEAL_INFATUATION: //mental herb
-            if (ctx->battleMons[battlerId].status2 & STATUS2_ATTRACT) {
+            if ((ctx->battleMons[battlerId].status2 & STATUS2_ATTRACT) ||
+				(ctx->battleMons[battlerId].unk88.tauntTurns) ||
+				(ctx->battleMons[battlerId].unk88.encoredTurns) ||
+				(ctx->battleMons[battlerId].status2 & STATUS2_TORMENT) ||
+				(ctx->battleMons[battlerId].unk88.healBlockTurns) ||
+				(ctx->battleMons[battlerId].unk88.disabledTurns){
                 ctx->msgTemp = 6;
                 script = BATTLE_SUBSCRIPT_HELD_ITEM_HEAL_INFATUATION;
                 ret = TRUE;
@@ -4418,7 +4450,12 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
             break;
         }
         case HOLD_EFFECT_HEAL_INFATUATION: //mental herb
-            if (ctx->battleMons[battlerId].status2 & STATUS2_ATTRACT) {
+            if ((ctx->battleMons[battlerId].status2 & STATUS2_ATTRACT) ||
+				(ctx->battleMons[battlerId].unk88.tauntTurns) ||
+				(ctx->battleMons[battlerId].unk88.encoredTurns) ||
+				(ctx->battleMons[battlerId].status2 & STATUS2_TORMENT) ||
+				(ctx->battleMons[battlerId].unk88.healBlockTurns) ||
+				(ctx->battleMons[battlerId].unk88.disabledTurns){
                 ctx->msgTemp = 6;
                 *script = BATTLE_SUBSCRIPT_HELD_ITEM_HEAL_INFATUATION;
                 ret = TRUE;
@@ -5804,7 +5841,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
 
     for (i = 0; i < NELEMS(sTypeEnhancingItems); i++) {
         if (calcAttacker.item == sTypeEnhancingItems[i][0] && moveType == sTypeEnhancingItems[i][1]) {
-            movePower = movePower * (100 + calcAttacker.mod) / 100;
+            movePower = movePower * 120 / 100;
             break;
         }
     }
@@ -5845,23 +5882,23 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
     }
 
     if (calcAttacker.item == HOLD_EFFECT_DIALGA_BOOST && (moveType == TYPE_DRAGON || moveType == TYPE_STEEL) && calcAttacker.species == SPECIES_DIALGA) {
-        movePower = movePower * (100 + calcAttacker.mod) / 100;
+        movePower = movePower * 120 / 100;
     }
 
     if (calcAttacker.item == HOLD_EFFECT_PALKIA_BOOST && (moveType == TYPE_DRAGON || moveType == TYPE_WATER) && calcAttacker.species == SPECIES_PALKIA) {
-        movePower = movePower * (100 + calcAttacker.mod) / 100;
+        movePower = movePower * 120 / 100;
     }
 
     if (calcAttacker.item == HOLD_EFFECT_GIRATINA_BOOST && (moveType == TYPE_DRAGON || moveType == TYPE_GHOST) && !(GetBattlerVar(ctx, battlerIdAttacker, BMON_DATA_STATUS2, NULL) & STATUS2_TRANSFORM)&& calcAttacker.species == SPECIES_GIRATINA) {
-        movePower = movePower * (100 + calcAttacker.mod) / 100;
+        movePower = movePower * 120 / 100;
     }
 
     if (calcAttacker.item == HOLD_EFFECT_POWER_UP_PHYS && moveCategory == CATEGORY_PHYSICAL) {
-        movePower = movePower * (100 + calcAttacker.mod) / 100;
+        movePower = movePower * 110 / 100;
     }
 
     if (calcAttacker.item == HOLD_EFFECT_POWER_UP_SPEC && moveCategory == CATEGORY_SPECIAL) {
-        movePower = movePower * (100 + calcAttacker.mod) / 100;
+        movePower = movePower * 110 / 100;
     }
 
     if (CheckBattlerAbilityIfNotIgnored(ctx, battlerIdAttacker, battlerIdTarget, ABILITY_THICK_FAT) == TRUE && (moveType == TYPE_FIRE || moveType == TYPE_ICE)) {
@@ -5896,19 +5933,19 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         movePower /= 2;
     }
 
-    if (moveType == TYPE_GRASS && calcAttacker.ability == ABILITY_OVERGROW && calcAttacker.hp <= calcAttacker.maxHp / 3) {
+    if (moveType == TYPE_GRASS && calcAttacker.ability == ABILITY_OVERGROW && calcAttacker.hp <= calcAttacker.maxHp / 2) {
         movePower = movePower * 150 / 100;
     }
 
-    if (moveType == TYPE_FIRE && calcAttacker.ability == ABILITY_BLAZE && calcAttacker.hp <= calcAttacker.maxHp / 3) {
+    if (moveType == TYPE_FIRE && calcAttacker.ability == ABILITY_BLAZE && calcAttacker.hp <= calcAttacker.maxHp / 2) {
         movePower = movePower * 150 / 100;
     }
 
-    if (moveType == TYPE_WATER && calcAttacker.ability == ABILITY_TORRENT && calcAttacker.hp <= calcAttacker.maxHp / 3) {
+    if (moveType == TYPE_WATER && calcAttacker.ability == ABILITY_TORRENT && calcAttacker.hp <= calcAttacker.maxHp / 2) {
         movePower = movePower * 150 / 100;
     }
 
-    if (moveType == TYPE_BUG && calcAttacker.ability == ABILITY_SWARM && calcAttacker.hp <= calcAttacker.maxHp / 3) {
+    if (moveType == TYPE_BUG && calcAttacker.ability == ABILITY_SWARM && calcAttacker.hp <= calcAttacker.maxHp / 2) {
         movePower = movePower * 150 / 100;
     }
 
@@ -6093,10 +6130,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
                 break;
             }
         }
-
-        if ((fieldCondition & FIELD_CONDITION_WEATHER_NO_SUN) && moveNo == MOVE_SOLAR_BEAM) {
-            dmg /= 2;
-        }
         if (fieldCondition & FIELD_CONDITION_SUN_ALL) {
             switch(moveType) {
             case TYPE_FIRE:
@@ -6117,18 +6150,11 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
 }
 
 int ApplyDamageRange(BattleSystem *bsys, BattleContext *ctx, int damage) {
-    if (damage) {
-        damage *= (100 - (BattleSystem_Random(bsys) % 16));
-        damage /= 100;
-        if (!damage) {
-            damage = 1;
-        }
-    }
     return damage;
 }
 
 static const u8 sCritChance[] = {
-    16, 8, 4, 3, 2
+    16, 8, 4, 2, 1
 };
 
 u32 TryCriticalHit(BattleSystem *bsys, BattleContext *ctx, int battlerIdAttacker, int battlerIdTarget, int critCnt, u32 sideCondition) {
@@ -6176,7 +6202,6 @@ static const u16 sMetronomeUnuseableMoves[] = {
     MOVE_STRUGGLE,
     MOVE_SKETCH,
     MOVE_MIMIC,
-    MOVE_CHATTER,
     0xFFFE,
     MOVE_SLEEP_TALK,
     MOVE_ASSIST,
@@ -6256,10 +6281,7 @@ BOOL IsMoveEncored(BattleContext *ctx, u16 moveNo) {
 static const u16 sMeFirstUnuseableMoves[] = {
     MOVE_COUNTER,
     MOVE_MIRROR_COAT,
-    MOVE_THIEF,
-    MOVE_COVET,
-    MOVE_FOCUS_PUNCH,
-    MOVE_CHATTER
+    MOVE_FOCUS_PUNCH
 };
 
 BOOL CheckLegalMeFirstMove(BattleContext *ctx, u16 moveNo) {
@@ -6685,7 +6707,7 @@ static int ov12_02258440(BattleContext *ctx, int moveNo) {
     case MOVE_EFFECT_DIVE:
     case MOVE_EFFECT_DIG:
     case MOVE_EFFECT_BOUNCE:
-    case MOVE_EFFECT_FLINCH_BURN_HIT:
+    case MOVE_EFFECT_SHADOW_FORCE:
         return (ctx->battleStatus & BATTLE_STATUS_CHARGE_MOVE_HIT);
     }
 

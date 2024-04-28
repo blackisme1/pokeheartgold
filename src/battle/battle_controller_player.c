@@ -1219,7 +1219,7 @@ static void BattleControllerPlayer_UpdateMonCondition(BattleSystem *bsys, Battle
                 } else {
                     ctx->battlerIdTemp = battlerId;
                     ctx->moveTemp = MOVE_AQUA_RING;
-                    ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 16);
+                    ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 8);
                     ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_AQUA_RING_HEAL);
                 }
                 ctx->commandNext = ctx->command;
