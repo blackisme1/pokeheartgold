@@ -8,7 +8,7 @@ _000:
     PrintBufferedMessage 
     Wait 
     WaitButtonABTime 30
-    Random 3, 3
+    Random 4, 0
     CheckItemHoldEffect CHECK_OPCODE_NOT_HAVE, BATTLER_CATEGORY_ATTACKER, HOLD_EFFECT_EXTEND_TRAPPING, _024
     UpdateVar OPCODE_SET, BSCRIPT_VAR_CALC_TEMP, 0x00000006
 
