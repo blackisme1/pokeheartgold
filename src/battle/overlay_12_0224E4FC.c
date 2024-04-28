@@ -5819,12 +5819,12 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         monSpAtk = monSpAtk * 150 / 100;
     }
 
-    if (calcAttacker.item == HOLD_EFFECT_LATI_SPECIAL && !(battleType & BATTLE_TYPE_FRONTIER) && (calcAttacker.species == SPECIES_LATIOS || calcAttacker.species == SPECIES_LATIAS)) {
-        monSpAtk = monSpAtk * 150 / 100;
+    if (calcAttacker.item == HOLD_EFFECT_LATI_SPECIAL && (calcAttacker.species == SPECIES_LATIOS || calcAttacker.species == SPECIES_LATIAS)) {
+        monSpAtk = monSpAtk * 120 / 100;
     }
 
-    if (calcTarget.item == HOLD_EFFECT_LATI_SPECIAL && !(battleType & BATTLE_TYPE_FRONTIER) && (calcTarget.species == SPECIES_LATIOS || calcTarget.species == SPECIES_LATIAS)) {
-        monSpDef = monSpDef * 150 / 100;
+    if (calcTarget.item == HOLD_EFFECT_LATI_SPECIAL && (calcTarget.species == SPECIES_LATIOS || calcTarget.species == SPECIES_LATIAS)) {
+        monSpDef = monSpDef * 120 / 100;
     }
 
     if (calcAttacker.item == HOLD_EFFECT_CLAMPERL_SPATK && calcAttacker.species == SPECIES_CLAMPERL) {
@@ -5971,16 +5971,16 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
     statChangeSpAtk += 6;
     statChangeSpDef += 6;
 
-    if (calcAttacker.ability == ABILITY_RIVALRY && calcAttacker.gender == calcTarget.gender && calcAttacker.gender != MON_GENDERLESS && calcTarget.gender != MON_GENDERLESS) {
+    if (calcAttacker.ability == ABILITY_RIVALRY && calcAttacker.type1 == calcTarget.type1 || calcAttacker.type1 == calcTarget.type2 || calcAttacker.type2 == calcTarget.type1 || calcAttacker.type2 == calcTarget.type2) {
         movePower = movePower * 125 / 100;
     }
-    if (calcAttacker.ability == ABILITY_RIVALRY && calcAttacker.gender != calcTarget.gender && calcAttacker.gender != MON_GENDERLESS && calcTarget.gender != MON_GENDERLESS) {
+    else {
         movePower = movePower * 75 / 100;
     }
 
     for (i = 0; i < NELEMS(sPunchingMoves); i++) {
         if (sPunchingMoves[i] == moveNo && calcAttacker.ability == ABILITY_IRON_FIST) {
-            movePower = movePower * BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE / 10;
+            movePower = movePower * 15 / 10;
             break;
         }
     }
@@ -5994,9 +5994,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
         if ((fieldCondition & FIELD_CONDITION_SUN_ALL) && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_SAME_SIDE_HP, battlerIdAttacker, ABILITY_FLOWER_GIFT)) {
             monAtk = monAtk * 15 / 10;
-        }
-        if ((fieldCondition & FIELD_CONDITION_SUN_ALL) && GetBattlerAbility(ctx, battlerIdAttacker) != ABILITY_MOLD_BREAKER && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_SAME_SIDE_HP, battlerIdTarget, ABILITY_FLOWER_GIFT)) {
-            monSpDef = monSpDef * 15 / 10;
+			monSpAtk = monSpAtk * 15 / 10;
         }
     }
 
@@ -6016,7 +6014,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg *= movePower;
-        dmg *= ((level * 2 / 5) + 2);
 
         if (crit > 1) {
             if (statChangeDef < 6) {
@@ -6029,7 +6026,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg /= dmg2;
-        dmg /= 50;
+        dmg /= 25;
 
         if ((calcAttacker.status & STATUS_BURN) && calcAttacker.ability != ABILITY_GUTS) {
             dmg /= 2;
@@ -6054,7 +6051,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg *= movePower;
-        dmg *= ((level * 2 / 5) + 2);
 
         if (crit > 1) {
             if (statChangeSpDef < 6) {
@@ -6067,7 +6063,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg /= dmg2;
-        dmg /= 50;
+        dmg /= 25;
 		
 		if ((calcAttacker.status & STATUS_FREEZE)) {
             dmg /= 2;
