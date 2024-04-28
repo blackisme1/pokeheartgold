@@ -3524,13 +3524,13 @@ BOOL BtlCmd_TrySafeguard(BattleSystem *bsys, BattleContext *ctx) {
 BOOL BtlCmd_Present(BattleSystem *bsys, BattleContext *ctx) {
     BattleScriptIncrementPointer(ctx, 1);
     int adrs = BattleScriptReadWord(ctx);
-    int rand = (u8)BattleSystem_Random(bsys);
+    int rand = (u8)BattleSystem_Random(bsys) % 100;
 
-    if (rand < 102) {
-        ctx->movePower = 40;
-    } else if (rand < 178) {
+    if (rand < 40) {
         ctx->movePower = 80;
-    } else if (rand < 204) {
+    } else if (rand < 70) {
+        ctx->movePower = 100;
+    } else if (rand < 80) {
         ctx->movePower = 120;
     } else {
         ctx->hpCalc = DamageDivide(ctx->battleMons[ctx->battlerIdTarget].maxHp, 4);
@@ -3546,25 +3546,25 @@ BOOL BtlCmd_CalcMagnitudePower(BattleSystem *bsys, BattleContext *ctx) {
     if (ctx->magnitude == 0) {
         ctx->magnitude = BattleSystem_Random(bsys) % 100;
         if (ctx->magnitude < 5) {
-            ctx->movePower = 10;
+            ctx->movePower = 40;
             ctx->magnitude = 4;
         } else if (ctx->magnitude < 15) {
-            ctx->movePower = 30;
+            ctx->movePower = 50;
             ctx->magnitude = 5;
         } else if (ctx->magnitude < 35) {
-            ctx->movePower = 50;
+            ctx->movePower = 60;
             ctx->magnitude = 6;
         } else if (ctx->magnitude < 65) {
             ctx->movePower = 70;
             ctx->magnitude = 7;
         } else if (ctx->magnitude < 85) {
-            ctx->movePower = 90;
+            ctx->movePower = 80;
             ctx->magnitude = 8;
         } else if (ctx->magnitude < 95) {
-            ctx->movePower = 110;
+            ctx->movePower = 90;
             ctx->magnitude = 9;
         } else {
-            ctx->movePower = 150;
+            ctx->movePower = 100;
             ctx->magnitude = 10;
         }
     }
@@ -3650,7 +3650,7 @@ BOOL BtlCmd_WeatherHPRecovery(BattleSystem *bsys, BattleContext *ctx) {
     if (!(ctx->fieldCondition & FIELD_CONDITION_WEATHER) || CheckAbilityActive(bsys, ctx, CHECK_ABILITY_ALL_HP, 0, ABILITY_CLOUD_NINE) || CheckAbilityActive(bsys, ctx, CHECK_ABILITY_ALL_HP, 0, ABILITY_AIR_LOCK)) {
         ctx->hpCalc = ctx->battleMons[ctx->battlerIdAttacker].maxHp / 2;
     } else if (ctx->fieldCondition & FIELD_CONDITION_SUN_ALL) {
-        ctx->hpCalc = DamageDivide(ctx->battleMons[ctx->battlerIdAttacker].maxHp*20, 30);
+        ctx->hpCalc = DamageDivide(ctx->battleMons[ctx->battlerIdAttacker].maxHp * 2, 3);
     } else {
         ctx->hpCalc = DamageDivide(ctx->battleMons[ctx->battlerIdAttacker].maxHp, 4);
     }
@@ -5441,7 +5441,7 @@ BOOL BtlCmd_BoostRandomStatBy2(BattleSystem *bsys, BattleContext *ctx) {
     int adrs = BattleScriptReadWord(ctx);
 
     cnt = 0;
-    for (i = 1; i < 8; i++) {
+    for (i = 1; i < 6; i++) {
         if (ctx->battleMons[ctx->battlerIdTarget].statChanges[i] < 12) {
             statChanges[cnt++] = i-1;
         }

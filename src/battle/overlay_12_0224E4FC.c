@@ -4007,15 +4007,15 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
     if (ctx->battleMons[battlerId].hp) {
         switch (item) {
         case HOLD_EFFECT_HP_RESTORE: //oran berry, berry juice
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
-                ctx->hpCalc = boost;
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp * 3 / 4) {
+                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 8);
                 script = BATTLE_SUBSCRIPT_HELD_ITEM_HP_RESTORE;
                 ret = TRUE;
             }
             break;
         case HOLD_EFFECT_HP_PCT_RESTORE: //sitrus berry
             if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
-                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp * boost, 100);
+                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 4);
                 script = BATTLE_SUBSCRIPT_HELD_ITEM_HP_RESTORE;
                 ret = TRUE;
             }
@@ -4100,8 +4100,8 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_SPICY: //figy berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
-                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
+                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 2);
                 ctx->msgTemp = 0;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_SPICY) == -1) {
                     script = BATTLE_SUBSCRIPT_HELD_ITEM_DISLIKE_FLAVOR;
@@ -4112,8 +4112,8 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_DRY: //wiki berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
-                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
+                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 2);
                 ctx->msgTemp = 1;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_DRY) == -1) {
                     script = BATTLE_SUBSCRIPT_HELD_ITEM_DISLIKE_FLAVOR;
@@ -4124,8 +4124,8 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_SWEET: //mago berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
-                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
+                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 2);
                 ctx->msgTemp = 2;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_SWEET) == -1) {
                     script = BATTLE_SUBSCRIPT_HELD_ITEM_DISLIKE_FLAVOR;
@@ -4136,8 +4136,8 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_BITTER: //aguav berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
-                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
+                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 2);
                 ctx->msgTemp = 3;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_BITTER) == -1) {
                     script = BATTLE_SUBSCRIPT_HELD_ITEM_DISLIKE_FLAVOR;
@@ -4148,8 +4148,8 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_SOUR: //iappapa berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
-                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
+                ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 2);
                 ctx->msgTemp = 4;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_SOUR) == -1) {
                     script = BATTLE_SUBSCRIPT_HELD_ITEM_DISLIKE_FLAVOR;
@@ -4269,8 +4269,9 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
             if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
                 boost /= 2;
             }
-            if (ctx->battleMons[battlerId].hp <= (ctx->battleMons[battlerId].maxHp / boost)) {
-                script = BATTLE_SUBSCRIPT_HELD_ITEM_TEMP_ACC_UP;
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / boost && ctx->battleMons[battlerId].statChanges[6] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
+                ctx->msgTemp = 5;
+                script = BATTLE_SUBSCRIPT_HELD_ITEM_RAISE_STAT;
                 ret = TRUE;
             }
             break;
@@ -4471,7 +4472,7 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_SPICY: //figy berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
                 ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
                 ctx->msgTemp = 0;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_SPICY) == -1) {
@@ -4483,7 +4484,7 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_DRY: //wiki berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
                 ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
                 ctx->msgTemp = 1;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_DRY) == -1) {
@@ -4495,7 +4496,7 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_SWEET: //mago berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
                 ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
                 ctx->msgTemp = 2;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_SWEET) == -1) {
@@ -4507,7 +4508,7 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_BITTER: //aguav berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
                 ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
                 ctx->msgTemp = 3;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_BITTER) == -1) {
@@ -4519,7 +4520,7 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
             }
             break;
         case HOLD_EFFECT_HP_RESTORE_SOUR: //iappapa berry
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / (2 * ((GetBattlerAbility(ctx, battlerId) & ABILITY_GLUTTONY) + 1))) {
                 ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, boost);
                 ctx->msgTemp = 4;
                 if (GetFlavorPreferenceFromPID(ctx->battleMons[battlerId].personality, FLAVOR_SOUR) == -1) {
@@ -4608,6 +4609,16 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
                     *script = BATTLE_SUBSCRIPT_HELD_ITEM_SHARPLY_RAISE_STAT;
                     ret = TRUE;
                 }
+            }
+            break;
+		case HOLD_EFFECT_PINCH_ACC_UP: //micle berry
+            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
+                boost /= 2;
+            }
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / boost && ctx->battleMons[battlerId].statChanges[6] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
+                ctx->msgTemp = 5;
+                script = BATTLE_SUBSCRIPT_HELD_ITEM_RAISE_STAT;
+                ret = TRUE;
             }
             break;
         default:
