@@ -5778,6 +5778,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         moveType = ctx->trainerAIData.moveData[moveNo].type;
     } else {
         moveType = type & 0x3F;
+		movePower = movePower * 12 / 10;
     }
 
     GF_ASSERT(ctx->unk_2158 >= 10);
@@ -5791,7 +5792,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         movePower = movePower * 15 / 10;
     }
 
-    if (calcAttacker.ability == ABILITY_TECHNICIAN && moveNo != MOVE_STRUGGLE && movePower <= 60) {
+    if (calcAttacker.ability == ABILITY_TECHNICIAN && movePower <= 60) {
         movePower = movePower * 15 / 10;
     }
 
@@ -5799,10 +5800,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
 
     if (calcAttacker.ability == ABILITY_HUGE_POWER || calcAttacker.ability == ABILITY_PURE_POWER) {
         monAtk *= 2;
-    }
-
-    if (calcAttacker.ability == ABILITY_SLOW_START && (int)(ov12_022581D4(bsys, ctx, 3, 0) - GetBattlerVar(ctx, battlerIdAttacker, BMON_DATA_SLOW_START_TURN_NUMBER, NULL)) < 5) {
-        monAtk /= 2;
     }
 
     for (i = 0; i < NELEMS(sTypeEnhancingItems); i++) {
