@@ -3624,7 +3624,7 @@ BOOL Mon_UpdateRotomForm(Pokemon *mon, int form, int defaultSlot) {
 		MOVE_OVERHEAT,
 		MOVE_HYDRO_PUMP,
 		MOVE_BLIZZARD,
-		MOVE_TWISTER,
+		MOVE_AIR_SLASH,
 		MOVE_LEAF_STORM,
 	};
 
@@ -3663,7 +3663,7 @@ BOOL Mon_UpdateRotomForm(Pokemon *mon, int form, int defaultSlot) {
 		}
 	}
 	if (GetMonData(mon, MON_DATA_MOVE1, NULL) == MOVE_NONE) {
-		MonSetMoveInSlot_ResetPpUp(mon, MOVE_THUNDER_SHOCK, 0);
+		MonSetMoveInSlot_ResetPpUp(mon, MOVE_THUNDERBOLT, 0);
 	}
 	SetMonData(mon, MON_DATA_FORM, &form);
 	UpdateMonAbility(mon);
@@ -4050,24 +4050,7 @@ int LowestFlagNo(u32 mask) {
 }
 
 static const u16 sBattleFrontierBanlist[NUM_BANNED_BATTLE_FRONTIER] = {
-	SPECIES_MEWTWO,
-	SPECIES_MEW,
-	SPECIES_LUGIA,
-	SPECIES_HO_OH,
-	SPECIES_CELEBI,
-	SPECIES_KYOGRE,
-	SPECIES_GROUDON,
-	SPECIES_RAYQUAZA,
-	SPECIES_JIRACHI,
-	SPECIES_DEOXYS,
-	SPECIES_DIALGA,
-	SPECIES_PALKIA,
-	SPECIES_GIRATINA,
-	SPECIES_PHIONE,
-	SPECIES_MANAPHY,
-	SPECIES_DARKRAI,
-	SPECIES_SHAYMIN,
-	SPECIES_ARCEUS,
+	SPECIES_NONE
 };
 
 BOOL IsPokemonBannedFromBattleFrontier(u16 species, u16 form) {
@@ -4090,15 +4073,7 @@ u16 GetBannedBattleFrontierPokemon(u32 idx) {
 }
 
 static const u16 sMythicalMonsList[9] = {
-	SPECIES_MEW,
-	SPECIES_CELEBI,
-	SPECIES_JIRACHI,
-	SPECIES_DEOXYS,
-	SPECIES_PHIONE,
-	SPECIES_MANAPHY,
-	SPECIES_DARKRAI,
-	SPECIES_SHAYMIN,
-	SPECIES_ARCEUS,
+	SPECIES_NONE
 };
 
 BOOL SpeciesIsMythical(u16 species) {
