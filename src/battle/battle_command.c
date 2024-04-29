@@ -3661,7 +3661,7 @@ BOOL BtlCmd_WeatherHPRecovery(BattleSystem *bsys, BattleContext *ctx) {
 BOOL BtlCmd_CalcHiddenPowerParams(BattleSystem *bsys, BattleContext *ctx) {
     BattleScriptIncrementPointer(ctx, 1);
 
-    ctx->movePower = 60
+    ctx->movePower = 60;
     ctx->moveType =  (ctx->battleMons[ctx->battlerIdAttacker].hpIV & 1) |
                      ((ctx->battleMons[ctx->battlerIdAttacker].atkIV & 1) << 1)|
                      ((ctx->battleMons[ctx->battlerIdAttacker].defIV & 1) << 2) |

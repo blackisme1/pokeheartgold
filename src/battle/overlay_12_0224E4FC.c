@@ -3003,13 +3003,13 @@ static const u16 sHealBlockUnusableMoves[] = {
     MOVE_ROOST,
     MOVE_LUNAR_DANCE,
     MOVE_HEALING_WISH,
-    MOVE_WISH
-	MOVE_ABSORB
-	MOVE_DRAIN_PUNCH
-	MOVE_DREAM_EATER
-	MOVE_GIGA_DRAIN
-	MOVE_LEECH_LIFE
-	MOVE_LEECH_SEED
+    MOVE_WISH,
+	MOVE_ABSORB,
+	MOVE_DRAIN_PUNCH,
+	MOVE_DREAM_EATER,
+	MOVE_GIGA_DRAIN,
+	MOVE_LEECH_LIFE,
+	MOVE_LEECH_SEED,
 	MOVE_MEGA_DRAIN
 };
 
@@ -3863,7 +3863,7 @@ BOOL CheckStatusHealAbility(BattleSystem *bsys, BattleContext *ctx, int battlerI
 		(ctx->battleMons[battlerId].unk88.encoredTurns) ||
 		(ctx->battleMons[battlerId].status2 & STATUS2_TORMENT) ||
 		(ctx->battleMons[battlerId].unk88.healBlockTurns) ||
-		(ctx->battleMons[battlerId].unk88.disabledTurns){
+		(ctx->battleMons[battlerId].unk88.disabledTurns)){
             ctx->msgTemp = 6;
             ret = TRUE;
         }
@@ -4007,7 +4007,7 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
     if (ctx->battleMons[battlerId].hp) {
         switch (item) {
         case HOLD_EFFECT_HP_RESTORE: //oran berry, berry juice
-            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp * 3 / 4) {
+            if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / 2) {
                 ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 8);
                 script = BATTLE_SUBSCRIPT_HELD_ITEM_HP_RESTORE;
                 ret = TRUE;
@@ -4259,7 +4259,7 @@ BOOL TryUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
 				(ctx->battleMons[battlerId].unk88.encoredTurns) ||
 				(ctx->battleMons[battlerId].status2 & STATUS2_TORMENT) ||
 				(ctx->battleMons[battlerId].unk88.healBlockTurns) ||
-				(ctx->battleMons[battlerId].unk88.disabledTurns){
+				(ctx->battleMons[battlerId].unk88.disabledTurns)) {
                 ctx->msgTemp = 6;
                 script = BATTLE_SUBSCRIPT_HELD_ITEM_HEAL_INFATUATION;
                 ret = TRUE;
@@ -4456,18 +4456,9 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
 				(ctx->battleMons[battlerId].unk88.encoredTurns) ||
 				(ctx->battleMons[battlerId].status2 & STATUS2_TORMENT) ||
 				(ctx->battleMons[battlerId].unk88.healBlockTurns) ||
-				(ctx->battleMons[battlerId].unk88.disabledTurns){
+				(ctx->battleMons[battlerId].unk88.disabledTurns)) {
                 ctx->msgTemp = 6;
                 *script = BATTLE_SUBSCRIPT_HELD_ITEM_HEAL_INFATUATION;
-                ret = TRUE;
-            }
-            break;
-        case HOLD_EFFECT_PINCH_ACC_UP: //micle berry
-            if (GetBattlerAbility(ctx, battlerId) == ABILITY_GLUTTONY) {
-                boost /= 2;
-            }
-            if (ctx->battleMons[battlerId].hp <= (ctx->battleMons[battlerId].maxHp / boost)) {
-                *script = BATTLE_SUBSCRIPT_HELD_ITEM_TEMP_ACC_UP;
                 ret = TRUE;
             }
             break;
@@ -4617,7 +4608,7 @@ BOOL CheckUseHeldItem(BattleSystem *bsys, BattleContext *ctx, int battlerId, u32
             }
             if (ctx->battleMons[battlerId].hp <= ctx->battleMons[battlerId].maxHp / boost && ctx->battleMons[battlerId].statChanges[6] < BATTLE_SUBSCRIPT_UPDATE_STAT_STAGE) {
                 ctx->msgTemp = 6;
-                script = BATTLE_SUBSCRIPT_HELD_ITEM_RAISE_STAT;
+                *script = BATTLE_SUBSCRIPT_HELD_ITEM_RAISE_STAT;
                 ret = TRUE;
             }
             break;
@@ -4810,26 +4801,27 @@ int GetHeldItemFlingPower(BattleContext *ctx, int battlerId) {
 
 BOOL BattlerCanSwitch(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
     BOOL ret = FALSE;
+	
+	if (GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) == TYPE_GHOST || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) == TYPE_GHOST) {
+        return FALSE;
+    }
 
     if (GetBattlerHeldItemEffect(ctx, battlerId) == HOLD_EFFECT_SWITCH) {
         return FALSE;
     }
 
-    if ((ctx->battleMons[battlerId].status2 & (STATUS2_BIND | STATUS2_MEAN_LOOK)) || (ctx->battleMons[battlerId].moveEffectFlags & MOVE_EFFECT_FLAG_INGRAIN)) &&
-		(GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST) {
+    if ((ctx->battleMons[battlerId].status2 & (STATUS2_BIND | STATUS2_MEAN_LOOK)) || (ctx->battleMons[battlerId].moveEffectFlags & MOVE_EFFECT_FLAG_INGRAIN)) {
         ret = TRUE;
     }
 
-    if ((GetBattlerAbility(ctx, battlerId) != ABILITY_SHADOW_TAG && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_SHADOW_TAG)) && ((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST))) ||
-		(((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) == TYPE_STEEL || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) == TYPE_STEEL) && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_MAGNET_PULL))
-		((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST) && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_MAGNET_PULL))){
+    if ((GetBattlerAbility(ctx, battlerId) != ABILITY_SHADOW_TAG && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_SHADOW_TAG)) ||
+        ((GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) == TYPE_STEEL || GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) == TYPE_STEEL) && CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_MAGNET_PULL))) {
         ret = TRUE;
     }
 
     if (((GetBattlerAbility(ctx, battlerId) != ABILITY_LEVITATE &&
         ctx->battleMons[battlerId].unk88.magnetRiseTurns == 0 &&
         GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_FLYING && GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_FLYING) ||
-		GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_1, NULL) != TYPE_GHOST && GetBattlerVar(ctx, battlerId, BMON_DATA_TYPE_2, NULL) != TYPE_GHOST) ||
         GetBattlerHeldItemEffect(ctx, battlerId) == HOLD_EFFECT_SPEED_DOWN_GROUNDED ||
         (ctx->fieldCondition & FIELD_CONDITION_GRAVITY)) &&
         CheckAbilityActive(bsys, ctx, CHECK_ABILITY_OPPOSING_SIDE_HP, battlerId, ABILITY_ARENA_TRAP)) {
