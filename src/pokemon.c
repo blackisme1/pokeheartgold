@@ -3624,7 +3624,7 @@ BOOL Mon_UpdateRotomForm(Pokemon *mon, int form, int defaultSlot) {
 		MOVE_OVERHEAT,
 		MOVE_HYDRO_PUMP,
 		MOVE_BLIZZARD,
-		MOVE_AIR_SLASH,
+		MOVE_TWISTER,
 		MOVE_LEAF_STORM,
 	};
 
