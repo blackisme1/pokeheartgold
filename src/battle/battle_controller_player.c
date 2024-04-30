@@ -2449,28 +2449,14 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_CONFUSION) {
                 ctx->battleMons[ctx->battlerIdAttacker].status2 -= 1;
                 if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_CONFUSION) {
-                    if (BattleSystem_Random(bsys) & 1) {
-                        ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_CONFUSED);
-                        ctx->commandNext = ctx->command;
-                        ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                        ret = 2; 
-                    } else {
-                        ctx->moveFail[ctx->battlerIdAttacker].confusion = TRUE;
-                        ctx->battlerIdTarget = ctx->battlerIdAttacker;
-                        ctx->battlerIdTemp = ctx->battlerIdTarget;
-                        ctx->hpCalc = CalcMoveDamage(bsys, ctx, MOVE_STRUGGLE, 0, 0, 40, 0, ctx->battlerIdAttacker, ctx->battlerIdAttacker, 1);
-                        ctx->hpCalc = ApplyDamageRange(bsys, ctx, ctx->hpCalc);
-                        ctx->hpCalc *= -1;
-                        ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_HURT_SELF_IN_CONFUSION);
-                        ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                        ctx->commandNext = CONTROLLER_COMMAND_34;
-                        ret = 1; 
-                    }
-                } else {
-                    ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_SNAP_OUT_OF_CONFUSION);
-                    ctx->commandNext = ctx->command;
-                    ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-                    ret = 2; 
+					ctx->battlerIdTarget = ctx->battlerIdAttacker;
+					ctx->battlerIdTemp = ctx->battlerIdTarget;
+					ctx->hpCalc = CalcMoveDamage(bsys, ctx, MOVE_STRUGGLE, 0, 0, ctx->trainerAIData.moveData[ctx->moveNoCur].power, 0, ctx->battlerIdAttacker, ctx->battlerIdAttacker, 1);
+					ctx->hpCalc *= -1 / 2;
+					ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_HURT_SELF_IN_CONFUSION);
+					ctx->commandNext = ctx->command;
+					ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
+					ret = 1;
                 }
             }
             break;
