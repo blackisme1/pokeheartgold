@@ -4264,7 +4264,7 @@ ov12_0226C2EC: ; 0x0226C2EC
 .public sTrumpCardPowerTable
 
 sTrumpCardPowerTable: ; 0x0226C2F0
-	.byte 200, 80, 60, 50, 40
+	.byte 200, 160, 120, 80, 40
 
 .public sProtectSuccessChance
 	.balign 4, 0
@@ -4351,7 +4351,7 @@ sLowKickDamageTable:
 .public sNaturePowerMoveTable
 
 sNaturePowerMoveTable: ; 0x0226C3B4
-	.short MOVE_EARTHQUAKE, MOVE_EARTHQUAKE, MOVE_SEED_BOMB, MOVE_SEED_BOMB, MOVE_ROCK_SLIDE, MOVE_ROCK_SLIDE
+	.short MOVE_EARTH_POWER, MOVE_EARTH_POWER, MOVE_ENERGY_BALL, MOVE_ENERGY_BALL, MOVE_POWER_GEM, MOVE_POWER_GEM
 	.short MOVE_BLIZZARD, MOVE_HYDRO_PUMP, MOVE_ICE_BEAM, MOVE_TRI_ATTACK, MOVE_MUD_BOMB, MOVE_AIR_SLASH, MOVE_TRI_ATTACK
 
 	; Stat change multipliers

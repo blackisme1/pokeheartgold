@@ -6157,7 +6157,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         dmg = dmg * 15 / 10;
     }
 
-    return dmg + 2;
+    return dmg + 1;
 }
 
 int ApplyDamageRange(BattleSystem *bsys, BattleContext *ctx, int damage) {

@@ -738,7 +738,7 @@ static void DamageCalcDefault(BattleSystem *bsys, BattleContext *ctx) {
     }
 
     if (GetBattlerHeldItemEffect(ctx, ctx->battlerIdAttacker) == HOLD_EFFECT_BOOST_REPEATED) {
-        ctx->damage = ctx->damage * (10 + ctx->battleMons[ctx->battlerIdAttacker].unk88.metronomeTurns)/10;
+        ctx->damage = ctx->damage * (10 + ctx->battleMons[ctx->battlerIdAttacker].unk88.metronomeTurns)/5;
     }
 
     if (ctx->battleMons[ctx->battlerIdAttacker].unk88.meFirstFlag) {
@@ -746,7 +746,7 @@ static void DamageCalcDefault(BattleSystem *bsys, BattleContext *ctx) {
             ctx->battleMons[ctx->battlerIdAttacker].unk88.meFirstCount--;
         }
         if ((ctx->meFirstTotal - ctx->battleMons[ctx->battlerIdAttacker].unk88.meFirstCount) < 2) {
-            ctx->damage = ctx->damage*15/10;
+            ctx->damage = ctx->damage;
         } else {
             ctx->battleMons[ctx->battlerIdAttacker].unk88.meFirstFlag = 0;
         }
@@ -2751,7 +2751,7 @@ BOOL BtlCmd_TryDisable(BattleSystem *bsys, BattleContext *ctx) {
         ctx->battleMons[ctx->battlerIdTarget].movePPCur[disabledMoveIndex] && ctx->moveNoBattlerPrev[ctx->battlerIdTarget]) {
         ctx->moveTemp = ctx->moveNoBattlerPrev[ctx->battlerIdTarget];
         ctx->battleMons[ctx->battlerIdTarget].unk88.disabledMove = ctx->moveTemp;
-        ctx->battleMons[ctx->battlerIdTarget].unk88.disabledTurns = BattleSystem_Random(bsys) % 4 + 3;
+        ctx->battleMons[ctx->battlerIdTarget].unk88.disabledTurns = 4;
     } else {
         BattleScriptIncrementPointer(ctx, adrs);
     }
@@ -3396,7 +3396,7 @@ BOOL BtlCmd_EndOfTurnWeatherEffect(BattleSystem *bsys, BattleContext *ctx) {
             if (ctx->battleMons[battlerId].hp && !(ctx->battleMons[battlerId].moveEffectFlags & 0x40080)) {
                 if (GetBattlerAbility(ctx, battlerId) == ABILITY_ICE_BODY) {
                     if (ctx->battleMons[battlerId].hp < ctx->battleMons[battlerId].maxHp) {
-                        ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 16);
+                        ctx->hpCalc = DamageDivide(ctx->battleMons[battlerId].maxHp, 8);
                     }
                 } else if (type1 != TYPE_ICE && type2 != TYPE_ICE &&
                            GetBattlerAbility(ctx, battlerId) != ABILITY_SNOW_CLOAK) {
@@ -3444,7 +3444,7 @@ BOOL BtlCmd_CalcRolloutPower(BattleSystem *bsys, BattleContext *ctx) {
 
     if (!(ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_LOCKED_INTO_MOVE)) {
         LockBattlerIntoCurrentMove(bsys, ctx, ctx->battlerIdAttacker);
-        ctx->battleMons[ctx->battlerIdAttacker].unk88.rolloutCount = 5;
+        ctx->battleMons[ctx->battlerIdAttacker].unk88.rolloutCount = 3;
     }
 
     if (--ctx->battleMons[ctx->battlerIdAttacker].unk88.rolloutCount == 0) {
@@ -3453,7 +3453,7 @@ BOOL BtlCmd_CalcRolloutPower(BattleSystem *bsys, BattleContext *ctx) {
 
     ctx->movePower = ctx->trainerAIData.moveData[ctx->moveNoCur].power;
 
-    j = 5 - ctx->battleMons[ctx->battlerIdAttacker].unk88.rolloutCount;
+    j = 3 - ctx->battleMons[ctx->battlerIdAttacker].unk88.rolloutCount;
 
     for (i = 1; i < j; i++) {
         ctx->movePower *= 2;
@@ -3471,7 +3471,7 @@ BOOL BtlCmd_CalcFuryCutterPower(BattleSystem *bsys, BattleContext *ctx) {
 
     BattleScriptIncrementPointer(ctx, 1);
 
-    if (ctx->battleMons[ctx->battlerIdAttacker].unk88.furyCutterCount < 5) {
+    if (ctx->battleMons[ctx->battlerIdAttacker].unk88.furyCutterCount < 3) {
         ctx->battleMons[ctx->battlerIdAttacker].unk88.furyCutterCount++;
     }
 
@@ -3688,8 +3688,6 @@ BOOL BtlCmd_CopyStatStages(BattleSystem *bsys, BattleContext *ctx) {
         ctx->battleMons[ctx->battlerIdAttacker].statChanges[stat] = ctx->battleMons[ctx->battlerIdTarget].statChanges[stat];
     }
 
-    ctx->battleMons[ctx->battlerIdAttacker].status2 |= (ctx->battleMons[ctx->battlerIdTarget].status2 & STATUS2_FOCUS_ENERGY);
-
     return FALSE;
 }
 
@@ -3784,10 +3782,9 @@ BOOL BtlCmd_BeatUp(BattleSystem *bsys, BattleContext *ctx) {
 
     ctx->damage = GetMonBaseStat_HandleAlternateForm(species, form, BASE_ATK);
     ctx->damage *= ctx->trainerAIData.moveData[ctx->moveNoCur].power;
-    ctx->damage *= (level * 2 / 5 + 2);
     ctx->damage /= (u32) GetMonBaseStat_HandleAlternateForm(ctx->battleMons[ctx->battlerIdTarget].species, ctx->battleMons[ctx->battlerIdTarget].form, BASE_DEF);
-    ctx->damage /= 50;
-    ctx->damage += 2;
+    ctx->damage /= 25;
+	ctx->damage += 1;
     ctx->damage *= ctx->criticalMultiplier;
     if (ctx->turnData[ctx->battlerIdAttacker].helpingHandFlag) {
         ctx->damage = ctx->damage * 15/10;
@@ -4185,7 +4182,6 @@ BOOL BtlCmd_CalcWeatherBallParams(BattleSystem *bsys, BattleContext *ctx) {
 
     if (!CheckAbilityActive(bsys, ctx, CHECK_ABILITY_ALL_HP, 0, ABILITY_CLOUD_NINE) && !CheckAbilityActive(bsys, ctx, CHECK_ABILITY_ALL_HP, 0, ABILITY_AIR_LOCK)) {
         if (ctx->fieldCondition & FIELD_CONDITION_WEATHER) {
-            ctx->movePower = ctx->trainerAIData.moveData[ctx->moveNoCur].power * 2;
             if (ctx->fieldCondition & FIELD_CONDITION_RAIN_ALL) {
                 ctx->moveType = TYPE_WATER;
             }
@@ -4431,7 +4427,7 @@ BOOL BtlCmd_CalcTrumpCardPower(BattleSystem *bsys, BattleContext *ctx) {
 BOOL BtlCmd_CalcWringOutPower(BattleSystem *bsys, BattleContext *ctx) {
     BattleScriptIncrementPointer(ctx, 1);
 
-    ctx->movePower = 1 + (120*ctx->battleMons[ctx->battlerIdTarget].hp)/ctx->battleMons[ctx->battlerIdTarget].maxHp;
+    ctx->movePower = 1 + (150*ctx->battleMons[ctx->battlerIdTarget].hp)/ctx->battleMons[ctx->battlerIdTarget].maxHp;
 
     return FALSE;
 }
@@ -5122,13 +5118,13 @@ BOOL BtlCmd_CheckChatterActivation(BattleSystem *bsys, BattleContext *ctx) {
         switch (param) {
         default:
         case 0:
-            effectChance = 0;
+            effectChance = 99;
             break;
         case 1:
-            effectChance = 10;
+            effectChance = 99;
             break;
         case 2:
-            effectChance = 30;
+            effectChance = 99;
             break;
         }
         if ((BattleSystem_Random(bsys) % 100) > effectChance) {
