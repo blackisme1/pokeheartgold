@@ -2395,8 +2395,6 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             break;
         case 4:
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_FLINCH) {
-                ctx->battleMons[ctx->battlerIdAttacker].status2 &= ~STATUS2_FLINCH;
-                ctx->moveFail[ctx->battlerIdAttacker].flinch = TRUE;
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FLINCHED);
 				ctx->commandNext = ctx->command;
 				ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
@@ -2447,13 +2445,10 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
         case 9:
             ctx->unk_50++;
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_CONFUSION) {
-                ctx->battleMons[ctx->battlerIdAttacker].status2 -= 1;
-				ctx->battlerIdTarget = ctx->battlerIdAttacker;
-				ctx->battlerIdTemp = ctx->battlerIdTarget;
-				ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_HURT_SELF_IN_CONFUSION);
+				ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_CONFUSED);
 				ctx->commandNext = ctx->command;
 				ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-				ret = 1;
+				ret = 2; 
             }
             break;
         case 10:
