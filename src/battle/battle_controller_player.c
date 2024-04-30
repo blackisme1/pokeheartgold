@@ -3242,36 +3242,6 @@ void ov12_0224CC88(BattleSystem *bsys, BattleContext *ctx) {
         //fallthrough
     case 6:
         {
-            int moveType;
-            
-            if (GetBattlerAbility(ctx, ctx->battlerIdAttacker) == ABILITY_NORMALIZE) {
-                moveType = TYPE_NORMAL;
-            } else if (ctx->moveType != 0) {
-                moveType = ctx->moveType;
-            } else {
-                moveType = ctx->trainerAIData.moveData[ctx->moveNoCur].type;
-            }
-            
-            ctx->unk_40++;
-            
-            //Check for unfreeze via move
-            if(ctx->battlerIdTarget != BATTLER_NONE
-                && (ctx->battleMons[ctx->battlerIdTarget].status & STATUS_FREEZE)
-                && !(ctx->moveStatusFlag & MOVE_STATUS_MULTI_HIT_DISRUPTED)
-                && ctx->battlerIdTarget != ctx->battlerIdAttacker
-                && (ctx->selfTurnData[ctx->battlerIdTarget].physicalDamage != 0 || ctx->selfTurnData[ctx->battlerIdTarget].specialDamage != 0)
-                && ctx->battleMons[ctx->battlerIdTarget].hp != 0
-                && moveType == TYPE_FIRE) {
-                ctx->battlerIdTemp = ctx->battlerIdTarget;
-                ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_THAW_OUT);
-                ctx->commandNext = ctx->command;
-                ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT; 
-                return;
-            }
-        }
-        //fallthrough
-    case 7:
-        {
             int battlerId;
             int flag = 0;
             int script;
