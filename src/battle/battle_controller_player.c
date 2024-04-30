@@ -2448,16 +2448,12 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
             ctx->unk_50++;
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_CONFUSION) {
                 ctx->battleMons[ctx->battlerIdAttacker].status2 -= 1;
-                if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_CONFUSION) {
-					ctx->battlerIdTarget = ctx->battlerIdAttacker;
-					ctx->battlerIdTemp = ctx->battlerIdTarget;
-					ctx->hpCalc = CalcMoveDamage(bsys, ctx, MOVE_STRUGGLE, 0, 0, ctx->trainerAIData.moveData[ctx->moveNoCur].power, 0, ctx->battlerIdAttacker, ctx->battlerIdAttacker, 1);
-					ctx->hpCalc *= -1 / 2;
-					ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_HURT_SELF_IN_CONFUSION);
-					ctx->commandNext = ctx->command;
-					ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
-					ret = 1;
-                }
+				ctx->battlerIdTarget = ctx->battlerIdAttacker;
+				ctx->battlerIdTemp = ctx->battlerIdTarget;
+				ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_HURT_SELF_IN_CONFUSION);
+				ctx->commandNext = ctx->command;
+				ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
+				ret = 1;
             }
             break;
         case 10:
