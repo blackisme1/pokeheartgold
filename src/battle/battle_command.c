@@ -4924,7 +4924,7 @@ BOOL BtlCmd_CalcNaturalGiftParams(BattleSystem *bsys, BattleContext *ctx) {
     BattleScriptIncrementPointer(ctx, 1);
 
     int adrs = BattleScriptReadWord(ctx);
-    int power = GetNaturalGiftPower(ctx, ctx->battlerIdAttacker);
+    int power = 120;
 
     if (power) {
         ctx->movePower = power;
