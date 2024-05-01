@@ -6071,7 +6071,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg /= dmg2;
-        dmg /= 25;
 
         if ((calcAttacker.status & STATUS_BURN) && calcAttacker.ability != ABILITY_GUTS) {
             dmg /= 2;
@@ -6108,7 +6107,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg /= dmg2;
-        dmg /= 25;
 		
 		if ((calcAttacker.status & STATUS_FREEZE)) {
             dmg /= 2;
@@ -6156,6 +6154,8 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
     if (GetBattlerVar(ctx, battlerIdAttacker, BMON_DATA_FLASH_FIRE, NULL) && moveType == TYPE_FIRE) {
         dmg = dmg * 15 / 10;
     }
+	
+	dmg = dmg / (100 - level)
 
     return dmg + 1;
 }
