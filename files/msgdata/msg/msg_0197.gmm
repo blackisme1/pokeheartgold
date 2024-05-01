@@ -407,15 +407,15 @@
 	</row>
 	<row id="msg_0197_00101" index="101">
 		<attribute name="window_context_name">used</attribute>
-		<language name="English">{STRVAR_1 1, 0, 0} was\nfrozen solid!</language>
+		<language name="English">{STRVAR_1 1, 0, 0} was\nfrostbitten!</language>
 	</row>
 	<row id="msg_0197_00102" index="102">
 		<attribute name="window_context_name">used</attribute>
-		<language name="English">The wild {STRVAR_1 1, 0, 0} was\nfrozen solid!</language>
+		<language name="English">The wild {STRVAR_1 1, 0, 0} was\nfrostbitten!</language>
 	</row>
 	<row id="msg_0197_00103" index="103">
 		<attribute name="window_context_name">used</attribute>
-		<language name="English">The foe’s {STRVAR_1 1, 0, 0} was\nfrozen solid!</language>
+		<language name="English">The foe’s {STRVAR_1 1, 0, 0} was\nfrostbitten!</language>
 	</row>
 	<row id="msg_0197_00104" index="104">
 		<attribute name="window_context_name">used</attribute>
@@ -447,15 +447,15 @@
 	</row>
 	<row id="msg_0197_00111" index="111">
 		<attribute name="window_context_name">used</attribute>
-		<language name="English">{STRVAR_1 1, 0, 0} is\nfrozen solid!</language>
+		<language name="English">{STRVAR_1 1, 0, 0} is\nhurt by its frostbite!</language>
 	</row>
 	<row id="msg_0197_00112" index="112">
 		<attribute name="window_context_name">used</attribute>
-		<language name="English">The wild {STRVAR_1 1, 0, 0} is\nfrozen solid!</language>
+		<language name="English">The wild {STRVAR_1 1, 0, 0} is\nhurt by its frostbite!</language>
 	</row>
 	<row id="msg_0197_00113" index="113">
 		<attribute name="window_context_name">used</attribute>
-		<language name="English">The foe’s {STRVAR_1 1, 0, 0} is\nfrozen solid!</language>
+		<language name="English">The foe’s {STRVAR_1 1, 0, 0} is\nhurt by its frostbite!</language>
 	</row>
 	<row id="msg_0197_00114" index="114">
 		<attribute name="window_context_name">used</attribute>
