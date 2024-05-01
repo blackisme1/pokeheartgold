@@ -859,11 +859,7 @@ static u32 GetBoxMonDataInternal(BoxPokemon *boxMon, int attr, void * dest) {
 				 (blockB->spdefIV << 25);
 		break;
 	case MON_DATA_UNK_176:
-		if ((blockA->species == SPECIES_NIDORAN_F || blockA->species == SPECIES_NIDORAN_M) && !blockB->isNicknamed) {
-			ret = FALSE;
-		} else {
-			ret = TRUE;
-		}
+		ret = TRUE;
 		break;
 	case MON_DATA_TYPE_1:
 	case MON_DATA_TYPE_2:
