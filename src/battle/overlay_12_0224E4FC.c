@@ -6155,7 +6155,7 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         dmg = dmg * 15 / 10;
     }
 	
-	dmg = dmg / (100 - level)
+	dmg = 2 * dmg / (100 - level);
 
     return dmg + 1;
 }

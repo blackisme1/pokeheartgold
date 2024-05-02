@@ -4341,11 +4341,11 @@ ov12_0226C384: ; 0x0226C384
 .public sLowKickDamageTable
 
 sLowKickDamageTable:
-	.short 100, 20
-	.short 250, 40
-	.short 500, 60
-	.short 1000, 80
-	.short 2000, 100
+	.short 125, 40
+	.short 250, 60
+	.short 500, 80
+	.short 1000, 100
+	.short 2000, 120
 	.short 0xFFFF, 0xFFFF
 
 .public sNaturePowerMoveTable

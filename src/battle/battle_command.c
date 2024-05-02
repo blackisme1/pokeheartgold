@@ -3781,11 +3781,11 @@ BOOL BtlCmd_BeatUp(BattleSystem *bsys, BattleContext *ctx) {
     level = GetMonData(mon, MON_DATA_LEVEL, 0);
 
     ctx->damage = GetMonBaseStat_HandleAlternateForm(species, form, BASE_ATK);
-    ctx->damage *= ctx->trainerAIData.moveData[ctx->moveNoCur].power;
+    ctx->damage *= 20;
     ctx->damage /= (u32) GetMonBaseStat_HandleAlternateForm(ctx->battleMons[ctx->battlerIdTarget].species, ctx->battleMons[ctx->battlerIdTarget].form, BASE_DEF);
-    ctx->damage /= 25;
+    ctx->damage = 2 * ctx->damage / (100 - level);
 	ctx->damage += 1;
-    ctx->damage *= ctx->criticalMultiplier;
+    ctx->damage = ctx->damage * ctx->criticalMultiplier + (GetMonBaseStat_HandleAlternateForm(species, form, BASE_ABILITY_1) == ABILITY_SNIPER);
     if (ctx->turnData[ctx->battlerIdAttacker].helpingHandFlag) {
         ctx->damage = ctx->damage * 15/10;
     }
@@ -3805,8 +3805,7 @@ BOOL BtlCmd_BeatUp(BattleSystem *bsys, BattleContext *ctx) {
             if (ctx->beatUpCount == ctx->selectedMonIndex[ctx->battlerIdAttacker]
              || (GetMonData(mon, MON_DATA_HP, 0) != 0
                  && GetMonData(mon, MON_DATA_SPECIES_OR_EGG, 0) != SPECIES_NONE
-                 && GetMonData(mon, MON_DATA_SPECIES_OR_EGG, 0) != SPECIES_EGG
-                 && GetMonData(mon, MON_DATA_STATUS, 0) == STATUS_NONE)) {
+                 && GetMonData(mon, MON_DATA_SPECIES_OR_EGG, 0) != SPECIES_EGG)) {
                 break;
             }
             ctx->beatUpCount++;
@@ -4171,7 +4170,7 @@ BOOL BtlCmd_CalcWeightBasedPower(BattleSystem *bsys, BattleContext *ctx) {
     if (sLowKickDamageTable[cnt][0] != 0xffff) {
         ctx->movePower = sLowKickDamageTable[cnt][1];
     } else {
-        ctx->movePower = 120;
+        ctx->movePower = 150;
     }
 
     return FALSE;
