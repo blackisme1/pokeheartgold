@@ -4279,10 +4279,10 @@ sProtectSuccessChance: ; 0x0226C2F8
 ; First byte: HP threshold as 64ths of max
 ; Second byte: Damage value
 sFlailDamageTable: ; 0x0226C300
-	.byte 1, 200
-	.byte 5, 150
-	.byte 12, 100
-	.byte 21, 80
+	.byte 1, 120
+	.byte 5, 100
+	.byte 12, 80
+	.byte 21, 60
 	.byte 42, 40
 	.byte 64, 20
 

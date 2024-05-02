@@ -2902,7 +2902,7 @@ BOOL BtlCmd_TrySketch(BattleSystem *bsys, BattleContext *ctx) {
 
     int adrs = BattleScriptReadWord(ctx);
 
-    if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_TRANSFORM || ctx->moveNoSketch[ctx->battlerIdTarget] == MOVE_STRUGGLE || ctx->moveNoSketch[ctx->battlerIdTarget] == MOVE_SKETCH || ctx->moveNoSketch[ctx->battlerIdTarget] == MOVE_CHATTER || ctx->moveNoSketch[ctx->battlerIdTarget] == 0) {
+    if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_TRANSFORM || ctx->moveNoSketch[ctx->battlerIdTarget] == MOVE_STRUGGLE || ctx->moveNoSketch[ctx->battlerIdTarget] == MOVE_SKETCH || ctx->moveNoSketch[ctx->battlerIdTarget] == 0) {
         BattleScriptIncrementPointer(ctx, adrs);
     } else {
         for (moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++) {
@@ -4170,7 +4170,7 @@ BOOL BtlCmd_CalcWeightBasedPower(BattleSystem *bsys, BattleContext *ctx) {
     if (sLowKickDamageTable[cnt][0] != 0xffff) {
         ctx->movePower = sLowKickDamageTable[cnt][1];
     } else {
-        ctx->movePower = 150;
+        ctx->movePower = 140;
     }
 
     return FALSE;
