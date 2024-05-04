@@ -222,7 +222,7 @@ void CreateBoxMon(BoxPokemon *boxMon, int species, int level, int fixedIV, int h
 		SetBoxMonData(boxMon, MON_DATA_SPATK_IV, &fixedIV);
 		SetBoxMonData(boxMon, MON_DATA_SPDEF_IV, &fixedIV);
 	} else {
-		exp = LCRandom();
+		exp = 0;
 		iv = exp & 0x1F;
 		SetBoxMonData(boxMon, MON_DATA_HP_IV, &iv);
 		iv = (exp & 0x3E0) >> 5;
@@ -361,27 +361,27 @@ void CalcMonStats(Pokemon *mon) {
 	if (species == SPECIES_SHEDINJA) {
 		newMaxHp = 1;
 	} else {
-		newMaxHp = baseStats->hp * level / 50 + 5 - level / 20;
+		newMaxHp = baseStats->hp * level / 50 + 10 - level / 20;
 	}
 	SetMonData(mon, MON_DATA_MAXHP, &newMaxHp);
 
-	newAtk = baseStats->atk * level / 50 + 5 - level / 20;
+	newAtk = baseStats->atk * level / 50 + 10 - level / 20;
 	newAtk = ModifyStatByNature(GetMonNature(mon), (u16)newAtk, STAT_ATK);
 	SetMonData(mon, MON_DATA_ATK, &newAtk);
 
-	newDef = baseStats->def * level / 50 + 5 - level / 20;
+	newDef = baseStats->def * level / 50 + 10 - level / 20;
 	newDef = ModifyStatByNature(GetMonNature(mon), (u16)newDef, STAT_DEF);
 	SetMonData(mon, MON_DATA_DEF, &newDef);
 
-	newSpeed = baseStats->speed * level / 50 + 5 - level / 20;
+	newSpeed = baseStats->speed * level / 50 + 10 - level / 20;
 	newSpeed = ModifyStatByNature(GetMonNature(mon), (u16)newSpeed, STAT_SPEED);
 	SetMonData(mon, MON_DATA_SPEED, &newSpeed);
 
-	newSpatk = baseStats->spatk * level / 50 + 5 - level / 20;
+	newSpatk = baseStats->spatk * level / 50 + 10 - level / 20;
 	newSpatk = ModifyStatByNature(GetMonNature(mon), (u16)newSpatk, STAT_SPATK);
 	SetMonData(mon, MON_DATA_SPATK, &newSpatk);
 
-	newSpdef = baseStats->spdef * level / 50 + 5 - level / 20;
+	newSpdef = baseStats->spdef * level / 50 + 10 - level / 20;
 	newSpdef = ModifyStatByNature(GetMonNature(mon), (u16)newSpdef, STAT_SPDEF);
 	SetMonData(mon, MON_DATA_SPDEF, &newSpdef);
 
