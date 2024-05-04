@@ -2965,11 +2965,6 @@ void SortMonsBySpeed(BattleSystem *bsys, BattleContext *ctx) {
 }
 
 static const u16 sGravityUnusableMoves[] = {
-    MOVE_FLY,
-    MOVE_BOUNCE,
-    MOVE_JUMP_KICK,
-    MOVE_HI_JUMP_KICK,
-    MOVE_SPLASH,
     MOVE_MAGNET_RISE
 };
 
@@ -6154,8 +6149,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
     if (GetBattlerVar(ctx, battlerIdAttacker, BMON_DATA_FLASH_FIRE, NULL) && moveType == TYPE_FIRE) {
         dmg = dmg * 15 / 10;
     }
-	
-	dmg = 2 * dmg / (100 - level);
 
     return dmg + 1;
 }
