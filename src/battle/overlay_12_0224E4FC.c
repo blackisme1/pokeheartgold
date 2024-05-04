@@ -6150,7 +6150,9 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         dmg = dmg * 15 / 10;
     }
 
-    return dmg + 1;
+    dmg = 5 * dmg;
+	dmg = dmg / (100 - level);
+	return dmg + 1;
 }
 
 int ApplyDamageRange(BattleSystem *bsys, BattleContext *ctx, int damage) {
@@ -6208,6 +6210,7 @@ static const u16 sMetronomeUnuseableMoves[] = {
     MOVE_MIMIC,
     0xFFFE,
     MOVE_SLEEP_TALK,
+	MOVE_SNORE,
     MOVE_ASSIST,
     MOVE_MIRROR_MOVE,
     MOVE_COUNTER,
@@ -6216,11 +6219,9 @@ static const u16 sMetronomeUnuseableMoves[] = {
     MOVE_DETECT,
     MOVE_ENDURE,
     MOVE_DESTINY_BOND,
-    MOVE_THIEF,
     MOVE_FOLLOW_ME,
     MOVE_SNATCH,
     MOVE_HELPING_HAND,
-    MOVE_COVET,
     MOVE_TRICK,
     MOVE_FOCUS_PUNCH,
     MOVE_FEINT,
