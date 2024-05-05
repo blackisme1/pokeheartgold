@@ -314,18 +314,6 @@ void CalcMonStats(Pokemon *mon) {
 	BASE_STATS * baseStats;
 	int level;
 	int maxHp;
-	int hpIv;
-	int hpEv;
-	int atkIv;
-	int defIv;
-	int speedIv;
-	int spatkIv;
-	int spdefIv;
-	int atkEv;
-	int defEv;
-	int speedEv;
-	int spatkEv;
-	int spdefEv;
 	int form;
 	int hp;
 	int species;
@@ -340,18 +328,6 @@ void CalcMonStats(Pokemon *mon) {
 	level = (int)GetMonData(mon, MON_DATA_LEVEL, NULL);
 	maxHp = (int)GetMonData(mon, MON_DATA_MAXHP, NULL);
 	hp = (int)GetMonData(mon, MON_DATA_HP, NULL);
-	hpIv = (int)GetMonData(mon, MON_DATA_HP_IV, NULL);
-	hpEv = (int)GetMonData(mon, MON_DATA_HP_EV, NULL);
-	atkIv = (int)GetMonData(mon, MON_DATA_ATK_IV, NULL);
-	atkEv = (int)GetMonData(mon, MON_DATA_ATK_EV, NULL);
-	defIv = (int)GetMonData(mon, MON_DATA_DEF_IV, NULL);
-	defEv = (int)GetMonData(mon, MON_DATA_DEF_EV, NULL);
-	speedIv = (int)GetMonData(mon, MON_DATA_SPEED_IV, NULL);
-	speedEv = (int)GetMonData(mon, MON_DATA_SPEED_EV, NULL);
-	spatkIv = (int)GetMonData(mon, MON_DATA_SPATK_IV, NULL);
-	spatkEv = (int)GetMonData(mon, MON_DATA_SPATK_EV, NULL);
-	spdefIv = (int)GetMonData(mon, MON_DATA_SPDEF_IV, NULL);
-	spdefEv = (int)GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
 	form = (int)GetMonData(mon, MON_DATA_FORM, NULL);
 	species = (int)GetMonData(mon, MON_DATA_SPECIES, NULL);
 
@@ -366,23 +342,18 @@ void CalcMonStats(Pokemon *mon) {
 	SetMonData(mon, MON_DATA_MAXHP, &newMaxHp);
 
 	newAtk = baseStats->atk * level / 50 + 10 - level / 20;
-	newAtk = ModifyStatByNature(GetMonNature(mon), (u16)newAtk, STAT_ATK);
 	SetMonData(mon, MON_DATA_ATK, &newAtk);
 
 	newDef = baseStats->def * level / 50 + 10 - level / 20;
-	newDef = ModifyStatByNature(GetMonNature(mon), (u16)newDef, STAT_DEF);
 	SetMonData(mon, MON_DATA_DEF, &newDef);
 
 	newSpeed = baseStats->speed * level / 50 + 10 - level / 20;
-	newSpeed = ModifyStatByNature(GetMonNature(mon), (u16)newSpeed, STAT_SPEED);
 	SetMonData(mon, MON_DATA_SPEED, &newSpeed);
 
 	newSpatk = baseStats->spatk * level / 50 + 10 - level / 20;
-	newSpatk = ModifyStatByNature(GetMonNature(mon), (u16)newSpatk, STAT_SPATK);
 	SetMonData(mon, MON_DATA_SPATK, &newSpatk);
 
 	newSpdef = baseStats->spdef * level / 50 + 10 - level / 20;
-	newSpdef = ModifyStatByNature(GetMonNature(mon), (u16)newSpdef, STAT_SPDEF);
 	SetMonData(mon, MON_DATA_SPDEF, &newSpdef);
 
 	FreeToHeap(baseStats);
