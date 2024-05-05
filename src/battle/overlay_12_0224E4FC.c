@@ -1076,9 +1076,15 @@ u8 CheckSortSpeed(BattleSystem *bsys, BattleContext *ctx, int battlerId1, int ba
     }
 
     if (ability1 == ABILITY_QUICK_FEET && ctx->battleMons[battlerId1].status & 0xFF) {
-        speed1 = speed1 * 15 / 10;
+        speed1 = speed1 * 2;
     } else if (ctx->battleMons[battlerId1].status & STATUS_PARALYSIS) {
-        speed1 /= 4;
+        speed1 /= 2;
+    }
+
+    if (ability1 == ABILITY_QUICK_FEET && ctx->battleMons[battlerId1].status & 0xFF) {
+        speed1 = speed1 * 2;
+    } else if (ctx->battleMons[battlerId1].status & STATUS_FREEZE) {
+        speed1 /= 2;
     }
 
     if (ability1 == ABILITY_SLOW_START && ctx->totalTurns - ctx->battleMons[battlerId1].unk88.slowStartTurns < 5) {
@@ -1134,10 +1140,16 @@ u8 CheckSortSpeed(BattleSystem *bsys, BattleContext *ctx, int battlerId1, int ba
         speed2 *= 2;
     }
 
-    if (ability2 == ABILITY_QUICK_FEET && ctx->battleMons[battlerId2].status & 0xFF) {
-        speed2 = speed2 * 15 / 10;
-    } else if (ctx->battleMons[battlerId2].status & STATUS_PARALYSIS) {
-        speed2 /= 4;
+    if (ability1 == ABILITY_QUICK_FEET && ctx->battleMons[battlerId1].status & 0xFF) {
+        speed1 = speed2 * 2;
+    } else if (ctx->battleMons[battlerId1].status & STATUS_PARALYSIS) {
+        speed1 /= 2;
+    }
+
+    if (ability1 == ABILITY_QUICK_FEET && ctx->battleMons[battlerId1].status & 0xFF) {
+        speed1 = speed2 * 2;
+    } else if (ctx->battleMons[battlerId1].status & STATUS_FREEZE) {
+        speed1 /= 2;
     }
 
     if (ability2 == ABILITY_SLOW_START && ctx->totalTurns - ctx->battleMons[battlerId2].unk88.slowStartTurns < 5) {
