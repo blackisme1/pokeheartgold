@@ -6138,21 +6138,21 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         dmg = dmg * 15 / 10;
     }
 	
-	if ((calcAttacker.status & STATUS_BURN) {
+	if (calcAttacker.status & STATUS_BURN) {
 		monAtk *= 2;
         monDef /= 2;
 		monSpAtk *= 2;
         monSpDef /= 2;
     }
 	
-	if ((calcAttacker.status & STATUS_FREEZE) {
+	if (calcAttacker.status & STATUS_FREEZE) {
 		monAtk /= 2;
         monDef *= 2;
 		monSpAtk /= 2;
         monSpDef *= 2;
     }
 	
-	if ((calcAttacker.status & STATUS_SLEEP) {
+	if (calcAttacker.status & STATUS_SLEEP) {
 		monAtk /= 2;
 		monSpAtk /= 2;
     }
