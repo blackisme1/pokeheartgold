@@ -6038,10 +6038,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
     }
 
-    if (ctx->trainerAIData.moveData[moveNo].effect == MOVE_EFFECT_HALVE_DEFENSE) {
-        monDef /= 2;
-    }
-
     if (moveCategory == CATEGORY_PHYSICAL) {
         if (crit > 1) {
             if (statChangeAtk > 6) {
@@ -6066,10 +6062,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg /= dmg2;
-
-        if ((calcAttacker.status & STATUS_BURN) && calcAttacker.ability != ABILITY_GUTS) {
-            dmg /= 2;
-        }
 
         if ((sideCondition & SIDE_CONDITION_REFLECT) && crit == 1 && ctx->trainerAIData.moveData[moveNo].effect != MOVE_EFFECT_REMOVE_SCREENS) {
             if ((battleType & BATTLE_TYPE_DOUBLES) && GetMonsHitCount(bsys, ctx, 1, battlerIdTarget) == 2) {
@@ -6102,10 +6094,6 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
         }
 
         dmg /= dmg2;
-		
-		if ((calcAttacker.status & STATUS_FREEZE)) {
-            dmg /= 2;
-        }
 
         if ((sideCondition & SIDE_CONDITION_LIGHT_SCREEN) && crit == 1 && ctx->trainerAIData.moveData[moveNo].effect != MOVE_EFFECT_REMOVE_SCREENS) {
             if ((battleType & BATTLE_TYPE_DOUBLES) && GetMonsHitCount(bsys, ctx, 1, battlerIdTarget) == 2) {
@@ -6148,6 +6136,25 @@ int CalcMoveDamage(BattleSystem *bsys, BattleContext *ctx, u32 moveNo, u32 sideC
 
     if (GetBattlerVar(ctx, battlerIdAttacker, BMON_DATA_FLASH_FIRE, NULL) && moveType == TYPE_FIRE) {
         dmg = dmg * 15 / 10;
+    }
+	
+	if ((calcAttacker.status & STATUS_BURN) {
+		monAtk *= 2;
+        monDef /= 2;
+		monSpAtk *= 2;
+        monSpDef /= 2;
+    }
+	
+	if ((calcAttacker.status & STATUS_FREEZE) {
+		monAtk /= 2;
+        monDef *= 2;
+		monSpAtk /= 2;
+        monSpDef *= 2;
+    }
+	
+	if ((calcAttacker.status & STATUS_SLEEP) {
+		monAtk /= 2;
+		monSpAtk /= 2;
     }
 
     dmg = 5 * dmg;
