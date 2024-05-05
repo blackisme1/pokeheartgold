@@ -1900,9 +1900,9 @@ void InitSwitchWork(BattleSystem *bsys, BattleContext *ctx, int battlerId) {
         i = ctx->battleMons[battlerId].atk;
         ctx->battleMons[battlerId].atk = ctx->battleMons[battlerId].def;
         ctx->battleMons[battlerId].def = i;
-	i = ctx->battleMons[battlerId].spatk;
-        ctx->battleMons[battlerId].spatk = ctx->battleMons[battlerId].spdef;
-        ctx->battleMons[battlerId].spdef = i;
+	i = ctx->battleMons[battlerId].spAtk;
+        ctx->battleMons[battlerId].spAtk = ctx->battleMons[battlerId].spDef;
+        ctx->battleMons[battlerId].spDef = i;
     }
 
     for (i = 0; i < maxBattlers; i++) {
