@@ -1165,7 +1165,6 @@ typedef enum UpdateMonConditionState {
     UMC_STATE_YAWN,
     UMC_STATE_HELD_ITEM_STATUS,
     UMC_STATE_HELD_ITEM_DAMAGE,
-	UMC_STATE_SLEEP,
 	UMC_STATE_PARALYZE,
     UMC_STATE_END
 } UpdateMonConditionState;
@@ -2321,6 +2320,7 @@ static BOOL ov12_0224B528(BattleSystem *bsys, BattleContext *ctx) {
         case 3:
             if (ctx->battleMons[ctx->battlerIdAttacker].status2 & STATUS2_FLINCH) {
                 ReadBattleScriptFromNarc(ctx, NARC_a_0_0_1, BATTLE_SUBSCRIPT_FLINCHED);
+				ctx->damage /= 2
 				ctx->commandNext = ctx->command;
 				ctx->command = CONTROLLER_COMMAND_RUN_SCRIPT;
                 ret = 2; 
